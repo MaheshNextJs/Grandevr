@@ -15,7 +15,7 @@ export default function RoomDetails() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           <div>
             <Image
-              src="/images/room1.png"
+              src="/images/Room1.png"
               alt="Executive Suite"
               width={800}
               height={600}
@@ -24,21 +24,21 @@ export default function RoomDetails() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Image
-              src="/images/room2.png"
+              src="/images/Room2.png"
               alt="Bathroom"
               width={400}
               height={300}
               className="rounded-md object-cover"
             />
             <Image
-              src="/images/room1.png"
+              src="/images/Room1.png"
               alt="Kitchen"
               width={400}
               height={300}
               className="rounded-md object-cover"
             />
             <Image
-              src="/images/room3.png"
+              src="/images/Room3.png"
               alt="Food"
               width={400}
               height={300}
@@ -47,7 +47,7 @@ export default function RoomDetails() {
             <div className="relative">
               <div className="relative group cursor-pointer">
                 <Image
-                  src="/images/room1.png"
+                  src="/images/Room1.png"
                   alt="Bedroom"
                   width={400}
                   height={300}
@@ -305,7 +305,7 @@ export default function RoomDetails() {
             {/* Card 1 */}
             <div className="rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition">
               <Image
-                src="/images/room2.png"
+                src="/images/Room2.png"
                 alt="Room"
                 width={400}
                 height={250}
@@ -328,7 +328,7 @@ export default function RoomDetails() {
             {/* Card 2 */}
             <div className="rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition">
               <Image
-                src="/images/room2.png"
+                src="/images/Room2.png"
                 alt="Executive Suite"
                 width={500}
                 height={300}
@@ -348,7 +348,6 @@ export default function RoomDetails() {
                 </button>
               </div>
             </div>
-            {/* <div></div> */}
           </div>
         </div>
       </div>
