@@ -70,9 +70,10 @@ export default function RoomDetails() {
                 <span className="block text-xs text-gray-500">/ NIGHT</span>
               </div>
             </div>
+
             <p className="text-gray-600 mb-6">
               This comfortable, modern hotel is set in the urban center of
-              Pontevedra, 10 minutes&rsquo; walk from the historic quarter. It
+              Pontevedra, 10 minutes&apos; walk from the historic quarter. It
               offers a terrace and chic, air-conditioned rooms with free Wi-Fi.
             </p>
 
@@ -347,7 +348,7 @@ export default function RoomDetails() {
                 </button>
               </div>
             </div>
-            <div></div>
+            {/* <div></div> */}
           </div>
         </div>
       </div>
