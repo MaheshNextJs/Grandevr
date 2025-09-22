@@ -56,9 +56,10 @@ export default function SpecialOffers() {
             <div className="p-6 text-left">
               <h3 className="font-semibold text-lg">Family Staycation</h3>
               <p className="text-gray-600 text-sm mt-2">
-                Spacious family suite, complimentary kids' meals, and free
-                access to kids' club and pool.
+                Spacious family suite, complimentary kids&apos; meals, and free
+                access to kids&apos; club and pool.
               </p>
+
               <div className="mt-4">
                 <button className="w-full text-sm px-5 py-2 bg-[#A57865] text-white rounded font-medium hover:bg-[#A57865]">
                   Book This Package

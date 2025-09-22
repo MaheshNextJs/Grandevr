@@ -38,8 +38,9 @@ export default function GuestTestimonials() {
                   ))}
                 </div>
                 <p className="text-gray-700 text-sm mb-4">
-                  "The hotel exceeded our expectations! The staff were warm, the
-                  rooms spotless, and the ocean view was breathtaking."
+                  &quot;The hotel exceeded our expectations! The staff were
+                  warm, the rooms spotless, and the ocean view was
+                  breathtaking.&quot;
                 </p>
               </div>
 

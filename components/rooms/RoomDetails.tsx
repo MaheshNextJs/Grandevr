@@ -72,18 +72,20 @@ export default function RoomDetails() {
             </div>
             <p className="text-gray-600 mb-6">
               This comfortable, modern hotel is set in the urban center of
-              Pontevedra, 10 minutes’ walk from the historic quarter. It offers
-              a terrace and chic, air-conditioned rooms with free Wi-Fi.
+              Pontevedra, 10 minutes&rsquo; walk from the historic quarter. It
+              offers a terrace and chic, air-conditioned rooms with free Wi-Fi.
             </p>
+
             <p className="text-gray-600 mb-6">
               Accommodations feature contemporary design and central heating.
               All rooms include a 26-inch plasma satellite TV, a work desk, and
               a private bathroom with hairdryer.
             </p>
+
             <p className="text-gray-600 mb-6">
-              Breakfast is served daily and the hotel’s restaurant offers a
-              varied, modern menu from Monday to Saturday. Several bars,
-              restaurants, and shops are within 5 minutes’ walk.
+              Breakfast is served daily and the hotel&rsquo;s restaurant offers
+              a varied, modern menu from Monday to Saturday. Several bars,
+              restaurants, and shops are within 5 minutes&rsquo; walk.
             </p>
 
             <div className="border-t border-gray-200 pt-6">
@@ -284,10 +286,10 @@ export default function RoomDetails() {
                   ))}
                   <span className="text-gray-300">★</span>
                 </div>
-                <p className="text-sm text-gray-600">
-                  "I've been consistently impressed with the quality of service
-                  provided by this website. They have exceeded my expectations
-                  and delivered exceptional results. Highly recommended!"
+                <p className="text-gray-600 mb-6">
+                  Breakfast is served daily and the hotel&rsquo;s restaurant
+                  offers a varied, modern menu from Monday to Saturday. Several
+                  bars, restaurants, and shops are within 5 minutes&rsquo; walk.
                 </p>
               </div>
             </div>
