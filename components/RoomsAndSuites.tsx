@@ -16,7 +16,7 @@ export default function RoomsAndSuites() {
           <div className="border border-[#EEEEEE] rounded-md shadow hover:shadow-lg transition overflow-hidden">
             <div className="relative">
               <Image
-                src="/images/room1.png"
+                src="/images/Room1.png"
                 alt="Deluxe King Room"
                 width={500}
                 height={300}
@@ -49,7 +49,7 @@ export default function RoomsAndSuites() {
 
           <div className="border border-[#EEEEEE] rounded-md shadow hover:shadow-lg transition overflow-hidden">
             <Image
-              src="/images/room2.png"
+              src="/images/Room2.png"
               alt="Executive Suite"
               width={500}
               height={300}
@@ -78,7 +78,7 @@ export default function RoomsAndSuites() {
 
           <div className="border border-[#EEEEEE] rounded-md shadow hover:shadow-lg transition overflow-hidden">
             <Image
-              src="/images/room3.png"
+              src="/images/Room3.png"
               alt="Presidential Suite"
               width={500}
               height={300}

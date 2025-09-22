@@ -16,7 +16,7 @@ export default function SpecialOffers() {
           <div className="border border-[#EEEEEE] rounded-md shadow hover:shadow-lg transition overflow-hidden">
             <div className="relative">
               <Image
-                src="/images/room1.png"
+                src="/images/Room1.png"
                 alt="Romantic Getaway"
                 width={500}
                 height={300}
@@ -43,7 +43,7 @@ export default function SpecialOffers() {
           <div className="border border-[#EEEEEE] rounded-md shadow hover:shadow-lg transition overflow-hidden">
             <div className="relative">
               <Image
-                src="/images/room2.png"
+                src="/images/Room2.png"
                 alt="Family Staycation"
                 width={500}
                 height={300}
@@ -71,7 +71,7 @@ export default function SpecialOffers() {
           <div className="border border-[#EEEEEE] rounded-md shadow hover:shadow-lg transition overflow-hidden">
             <div className="relative">
               <Image
-                src="/images/room3.png"
+                src="/images/Room3.png"
                 alt="Wellness Retreat"
                 width={500}
                 height={300}

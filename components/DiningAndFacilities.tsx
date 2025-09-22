@@ -14,7 +14,7 @@ export default function DiningAndFacilities() {
         <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-2">
           <div className="border border-[#EEEEEE] rounded-md shadow hover:shadow-lg transition overflow-hidden">
             <Image
-              src="/images/room1.png"
+              src="/images/Room1.png"
               alt="Exquisite Dining"
               width={500}
               height={300}
@@ -36,7 +36,7 @@ export default function DiningAndFacilities() {
 
           <div className="border border-[#EEEEEE] rounded-md shadow hover:shadow-lg transition overflow-hidden">
             <Image
-              src="/images/room3.png"
+              src="/images/Room3.png"
               alt="Wellness & Recreation"
               width={500}
               height={300}
@@ -60,7 +60,7 @@ export default function DiningAndFacilities() {
         <div className="mt-8 grid gap-8 sm:grid-cols-1 lg:grid-cols-1">
           <div className="border border-[#EEEEEE] rounded-md shadow hover:shadow-lg transition overflow-hidden flex flex-col sm:flex-row">
             <Image
-              src="/images/room2.png"
+              src="/images/Room2.png"
               alt="Events & Celebrations"
               width={500}
               height={300}
