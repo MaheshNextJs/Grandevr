@@ -1,5 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
+import Link from "next/link"; // ✅ Import Link
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -13,18 +14,18 @@ export default function Navbar() {
       <h1 className="text-2xl font-bold font-nico">Grandeur</h1>
 
       <nav className="space-x-8 hidden md:flex">
-        <a href="/rooms" className="hover:text-gray-500">
+        <Link href="/rooms" className="hover:text-gray-500">
           Rooms
-        </a>
-        <a href="/dining" className="hover:text-gray-500">
+        </Link>
+        <Link href="/dining" className="hover:text-gray-500">
           Dining
-        </a>
-        <a href="/facilities" className="hover:text-gray-500">
+        </Link>
+        <Link href="/facilities" className="hover:text-gray-500">
           Facilities
-        </a>
-        <a href="/contact" className="hover:text-gray-500">
+        </Link>
+        <Link href="/contact" className="hover:text-gray-500">
           Contact
-        </a>
+        </Link>
         <button className="px-2 flex items-center space-x-2 hover:text-gray-500">
           <span className="flex items-center justify-center h-6 w-6 text-sm rounded-full bg-white text-white">
             👤

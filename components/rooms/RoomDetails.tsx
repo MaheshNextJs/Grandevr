@@ -269,10 +269,12 @@ export default function RoomDetails() {
               key={index}
               className="flex items-start gap-4 p-4 border border-gray-200 rounded-md shadow-sm mb-4"
             >
-              <img
+              <Image
                 src="/images/user1.png"
                 alt="Reviewer"
-                className="w-12 h-12 rounded-full object-cover"
+                width={48} // same as w-12 / 12*4 = 48px
+                height={48} // same as h-12
+                className="rounded-full object-cover"
               />
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">John D.</h4>
