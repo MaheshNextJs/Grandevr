@@ -45,7 +45,6 @@ export default function GuestTestimonials() {
               </div>
 
               <div className="flex items-center gap-3 border-t border-gray-200 pt-4 p-6">
-                {" "}
                 <Image
                   src="/images/user1.png"
                   alt="Serhiy Hipskyy"
