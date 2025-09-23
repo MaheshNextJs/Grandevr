@@ -1,10 +1,12 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function RoomDetails() {
-  const [date, setDate] = useState(new Date(2025, 8)); // September 2025 (month is 0-indexed)
+  const router = useRouter();
+  const [date, setDate] = useState(new Date(2025, 8));
 
   const monthNames = [
     "January",
@@ -184,7 +186,12 @@ export default function RoomDetails() {
                   </select>
                 </div>
               </div>
-              <button className="w-full mt-4 bg-[#5A2A17] text-white py-3 rounded-md text-sm hover:bg-[#7a3c23] transition">
+              <button
+                onClick={() => router.push("/guest-details")}
+                className="w-full mt-4 bg-[#5A2A17] text-white py-3 rounded-md text-sm 
+             transition-all duration-300 ease-in-out 
+             hover:bg-[#7a3c23] hover:scale-105 hover:shadow-lg active:scale-95"
+              >
                 Book Now
               </button>
             </div>
