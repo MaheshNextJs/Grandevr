@@ -28,9 +28,11 @@ export default function RoomDetails() {
   const handleNextMonth = () => {
     setDate(new Date(date.getFullYear(), date.getMonth() + 1));
   };
+
   return (
     <section className="px-6 py-12 bg-white text-gray-800 font-sans">
       <div className="max-w-6xl mx-auto">
+        {/* Header */}
         <div className="mb-8 pt-10">
           <h2 className="text-xl font-semibold">Rooms & Suites</h2>
           <p className="text-gray-600 text-sm mt-2">
@@ -38,6 +40,7 @@ export default function RoomDetails() {
           </p>
         </div>
 
+        {/* Room Images */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           <div>
             <Image
@@ -87,7 +90,9 @@ export default function RoomDetails() {
           </div>
         </div>
 
+        {/* Main Grid (3 cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* Left Content */}
           <div className="lg:col-span-2">
             <div className="flex items-baseline justify-between mb-6">
               <h2 className="text-2xl font-semibold">Executive Suite</h2>
@@ -136,7 +141,8 @@ export default function RoomDetails() {
             </div>
           </div>
 
-          <div className="border border-gray-200  mb-20 shadow-md rounded-lg p-6">
+          {/* Booking Card */}
+          <div className="border border-gray-200 mb-20 shadow-md rounded-lg p-6">
             <div className="space-y-6">
               <div>
                 <label className="text-sm font-medium text-gray-700">
@@ -184,8 +190,12 @@ export default function RoomDetails() {
             </div>
           </div>
 
+          {/* Availability */}
           <div className="max-w-md">
-            {/* Calendar Header with arrows */}
+            <div className="flex items-center justify-between mb-4 w-full">
+              <h3 className="font-semibold text-lg">Room Availability</h3>
+            </div>
+
             <div className="flex items-center justify-between text-sm font-medium mb-4">
               <button
                 onClick={handlePrevMonth}
@@ -215,7 +225,7 @@ export default function RoomDetails() {
               <div>SAT</div>
             </div>
 
-            {/* Your hardcoded September 2025 grid stays as is for now */}
+            {/* Hardcoded September 2025 */}
             <div className="grid grid-cols-7 text-center text-sm gap-y-2 pt-2">
               {/* Empty slots before Sept 1 */}
               {Array.from({ length: 1 }).map((_, i) => (
@@ -262,11 +272,21 @@ export default function RoomDetails() {
               </div>
             </div>
           </div>
+          <div></div>
+          <div className=" bottom-6 pl-[300px]">
+            <Image
+              src="/icons/chat.png"
+              alt="Chat Icon"
+              width={64}
+              height={64}
+              className="cursor-pointer"
+            />
+          </div>
         </div>
 
+        {/* Amenities */}
         <div className="mt-10">
           <h3 className="font-semibold text-lg mb-4">Room Amenities</h3>
-
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm text-gray-700">
             <div className="flex items-center gap-2">
               <Image
@@ -277,12 +297,10 @@ export default function RoomDetails() {
               />
               <span>Kitchen</span>
             </div>
-
             <div className="flex items-center gap-2">
               <Image src="/icons/wifi.png" alt="WiFi" width={20} height={20} />
               <span>Free Wireless Internet</span>
             </div>
-
             <div className="flex items-center gap-2">
               <Image
                 src="/icons/washing machine.png"
@@ -292,12 +310,10 @@ export default function RoomDetails() {
               />
               <span>Washing Machine</span>
             </div>
-
             <div className="flex items-center gap-2">
               <Image src="/icons/pool.png" alt="Pool" width={20} height={20} />
               <span>Pool</span>
             </div>
-
             <div className="flex items-center gap-2">
               <Image
                 src="/icons/tv.png"
@@ -307,7 +323,6 @@ export default function RoomDetails() {
               />
               <span>Television</span>
             </div>
-
             <div className="flex items-center gap-2">
               <Image
                 src="/icons/barbecue.png"
@@ -334,10 +349,9 @@ export default function RoomDetails() {
           </ul>
         </div>
 
-        {/* Room Reviews */}
+        {/* Reviews */}
         <div className="mt-10 max-w-3xl">
           <h3 className="font-semibold text-lg mb-4">Room Reviews</h3>
-
           {[1, 2].map((review, index) => (
             <div
               key={index}
@@ -346,8 +360,8 @@ export default function RoomDetails() {
               <Image
                 src="/images/user1.png"
                 alt="Reviewer"
-                width={48} // same as w-12 / 12*4 = 48px
-                height={48} // same as h-12
+                width={48}
+                height={48}
                 className="rounded-full object-cover"
               />
               <div>
@@ -371,7 +385,6 @@ export default function RoomDetails() {
         {/* Similar Rooms */}
         <div className="mt-10">
           <h3 className="font-semibold text-lg mb-4">Similar Rooms</h3>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Card 1 */}
             <div className="rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition">
