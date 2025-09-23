@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Hero from "./Hero";
 import BookingForm from "./BookingForm";
 import Amenities from "@/components/Amenities";

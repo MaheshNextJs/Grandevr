@@ -1,5 +1,4 @@
 import Image from "next/image";
-import BookingForm from "./BookingForm";
 
 export default function Hero() {
   return (
