@@ -1,7 +1,33 @@
 "use client";
 import Image from "next/image";
+import { useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function RoomDetails() {
+  const [date, setDate] = useState(new Date(2025, 8)); // September 2025 (month is 0-indexed)
+
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const handlePrevMonth = () => {
+    setDate(new Date(date.getFullYear(), date.getMonth() - 1));
+  };
+
+  const handleNextMonth = () => {
+    setDate(new Date(date.getFullYear(), date.getMonth() + 1));
+  };
   return (
     <section className="px-6 py-12 bg-white text-gray-800 font-sans">
       <div className="max-w-6xl mx-auto">
@@ -65,9 +91,11 @@ export default function RoomDetails() {
           <div className="lg:col-span-2">
             <div className="flex items-baseline justify-between mb-6">
               <h2 className="text-2xl font-semibold">Executive Suite</h2>
-              <div className="text-right">
+              <div className="text-right flex items-baseline justify-end">
                 <span className="text-2xl font-bold text-gray-900">$199</span>
-                <span className="block text-xs text-gray-500">/ NIGHT</span>
+                <span className="text-md font-normal text-gray-400 ml-1">
+                  / Night
+                </span>
               </div>
             </div>
 
@@ -156,67 +184,81 @@ export default function RoomDetails() {
             </div>
           </div>
 
-          <div className="mt-10">
-            <h3 className="font-semibold text-lg mb-4">Room Availability</h3>
-
-            <div className="max-w-md">
-              <div className="text-center text-sm font-medium mb-4">
-                September 2025
+          <div className="max-w-md">
+            {/* Calendar Header with arrows */}
+            <div className="flex items-center justify-between text-sm font-medium mb-4">
+              <button
+                onClick={handlePrevMonth}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <FaChevronLeft />
+              </button>
+              <div className="text-center">
+                {monthNames[date.getMonth()]} {date.getFullYear()}
               </div>
-              <div className="grid grid-cols-7 text-center text-xs font-medium text-gray-600 border-b pb-2">
-                <div>SUN</div>
-                <div>MON</div>
-                <div>TUE</div>
-                <div>WED</div>
-                <div>THU</div>
-                <div>FRI</div>
-                <div>SAT</div>
-              </div>
+              <button
+                onClick={handleNextMonth}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <FaChevronRight />
+              </button>
+            </div>
 
-              <div className="grid grid-cols-7 text-center text-sm gap-y-2 pt-2">
-                {/* Empty slots before Sept 1 */}
-                {Array.from({ length: 1 }).map((_, i) => (
-                  <div key={`empty-${i}`}></div>
-                ))}
-                {/* Sept 1 to 7 */}
-                {Array.from({ length: 7 }, (_, i) => (
-                  <div key={`early-${i}`} className="text-gray-700">
-                    {i + 1}
-                  </div>
-                ))}
-                {/* Sept 8 to 11 - Not Available */}
-                {[8, 9, 10, 11].map((day) => (
+            {/* Days of week header */}
+            <div className="grid grid-cols-7 text-center text-xs font-medium text-gray-600 pb-2">
+              <div>SUN</div>
+              <div>MON</div>
+              <div>TUE</div>
+              <div>WED</div>
+              <div>THU</div>
+              <div>FRI</div>
+              <div>SAT</div>
+            </div>
+
+            {/* Your hardcoded September 2025 grid stays as is for now */}
+            <div className="grid grid-cols-7 text-center text-sm gap-y-2 pt-2">
+              {/* Empty slots before Sept 1 */}
+              {Array.from({ length: 1 }).map((_, i) => (
+                <div key={`empty-${i}`}></div>
+              ))}
+              {/* Sept 1 to 7 */}
+              {Array.from({ length: 7 }, (_, i) => (
+                <div key={`early-${i}`} className="text-gray-700">
+                  {i + 1}
+                </div>
+              ))}
+              {/* Sept 8 to 11 - Not Available */}
+              {[8, 9, 10, 11].map((day) => (
+                <div
+                  key={`na-${day}`}
+                  className="text-red-600 bg-red-100 rounded-md"
+                >
+                  {day}
+                </div>
+              ))}
+              {/* Sept 12 to 30 - Available */}
+              {Array.from({ length: 19 }, (_, i) => {
+                const day = i + 12;
+                return (
                   <div
-                    key={`na-${day}`}
-                    className="text-red-600 bg-red-100 rounded-md"
+                    key={`available-${day}`}
+                    className="text-green-700 bg-green-100 rounded-md"
                   >
                     {day}
                   </div>
-                ))}
-                {/* Sept 12 to 30 - Available */}
-                {Array.from({ length: 19 }, (_, i) => {
-                  const day = i + 12;
-                  return (
-                    <div
-                      key={`available-${day}`}
-                      className="text-green-700 bg-green-100 rounded-md"
-                    >
-                      {day}
-                    </div>
-                  );
-                })}
-              </div>
+                );
+              })}
+            </div>
 
-              {/* Legend */}
-              <div className="flex justify-start items-center gap-4 mt-4 text-sm">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-red-500 rounded-sm"></div>
-                  <span>Not Available</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-green-500 rounded-sm"></div>
-                  <span>Available</span>
-                </div>
+            {/* Legend */}
+            <div className="flex justify-start items-center gap-4 mt-4 text-sm">
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-red-500 rounded-sm"></div>
+                <span>Not Available</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-green-500 rounded-sm"></div>
+                <span>Available</span>
               </div>
             </div>
           </div>
@@ -227,27 +269,52 @@ export default function RoomDetails() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm text-gray-700">
             <div className="flex items-center gap-2">
-              <span>🍳</span>
+              <Image
+                src="/icons/kitchen.png"
+                alt="Kitchen"
+                width={15}
+                height={15}
+              />
               <span>Kitchen</span>
             </div>
+
             <div className="flex items-center gap-2">
-              <span>📶</span>
+              <Image src="/icons/wifi.png" alt="WiFi" width={20} height={20} />
               <span>Free Wireless Internet</span>
             </div>
+
             <div className="flex items-center gap-2">
-              <span>🧺</span>
+              <Image
+                src="/icons/washing machine.png"
+                alt="Washing Machine"
+                width={15}
+                height={15}
+              />
               <span>Washing Machine</span>
             </div>
+
             <div className="flex items-center gap-2">
-              <span>🏊</span>
+              <Image src="/icons/pool.png" alt="Pool" width={20} height={20} />
               <span>Pool</span>
             </div>
+
             <div className="flex items-center gap-2">
-              <span>📺</span>
+              <Image
+                src="/icons/tv.png"
+                alt="Television"
+                width={15}
+                height={15}
+              />
               <span>Television</span>
             </div>
+
             <div className="flex items-center gap-2">
-              <span>🍖</span>
+              <Image
+                src="/icons/barbecue.png"
+                alt="Barbecue"
+                width={15}
+                height={15}
+              />
               <span>Barbecue</span>
             </div>
           </div>
@@ -257,9 +324,13 @@ export default function RoomDetails() {
         <div className="mt-10">
           <h3 className="font-semibold text-lg mb-4">Policies</h3>
           <ul className="space-y-2 text-sm text-gray-700 list-disc list-inside">
-            <li>Check-in: 2:00 PM | Check-out: 12:00 PM</li>
-            <li>Cancellation: Free until 24 hours before arrival</li>
-            <li>Occupancy: Max 3 adults or 2 adults + 1 child</li>
+            <li className="p-2">Check-in: 2:00 PM | Check-out: 12:00 PM</li>
+            <li className="p-2">
+              Cancellation: Free until 24 hours before arrival
+            </li>
+            <li className="p-2">
+              Occupancy: Max 3 adults or 2 adults + 1 child
+            </li>
           </ul>
         </div>
 
