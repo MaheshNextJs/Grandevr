@@ -7,9 +7,8 @@ const steps = ["Dates & Rooms", "Guest Details", "Payment", "Confirmation"];
 
 export default function GuestDetails() {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(2); // 1-based (2 = "Guest Details")
+  const [currentStep, setCurrentStep] = useState(2);
 
-  // refs to measure exact positions
   const railRef = useRef<HTMLDivElement>(null);
   const firstRef = useRef<HTMLDivElement>(null);
   const lastRef = useRef<HTMLDivElement>(null);
@@ -25,7 +24,6 @@ export default function GuestDetails() {
       const firstBox = firstRef.current.getBoundingClientRect();
       const lastBox = lastRef.current.getBoundingClientRect();
 
-      // centers of first/last bubbles
       const firstCenter = firstBox.left + firstBox.width / 2;
       const lastCenter = lastBox.left + lastBox.width / 2;
 
@@ -42,7 +40,7 @@ export default function GuestDetails() {
 
   const handlePayment = () => {
     setCurrentStep(3);
-    router.push("/payment");
+    router.push("/payments");
   };
 
   return (
@@ -50,14 +48,13 @@ export default function GuestDetails() {
       <div className="max-w-6xl mx-auto">
         {/* ===== Stepper ===== */}
         <div className="mb-12 relative" ref={railRef}>
-          {/* base line (exactly between first & last centers) */}
           <div
             className="absolute top-7 h-[2px] bg-gray-300 z-0"
             style={{ left: railStyle.left, width: railStyle.width }}
           />
-          {/* progress line (fills by segments) */}
+
           <div
-            className="absolute top-7 h-[2px] bg-[#5A2A17] z-0"
+            className="absolute top-7 h-[2px] bg-[#A57865] z-0"
             style={{
               left: railStyle.left,
               width:
@@ -89,9 +86,9 @@ export default function GuestDetails() {
                     className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-sm
                     ${
                       isCompleted
-                        ? "bg-[#5A2A17] text-white"
+                        ? "bg-[#A57865] text-white"
                         : isCurrent
-                        ? "bg-white border-2 border-[#5A2A17] text-[#5A2A17]"
+                        ? "bg-white border-2 border-[#A57865] text-[#A57865]"
                         : "bg-gray-200 text-gray-500"
                     }`}
                   >
@@ -162,14 +159,14 @@ export default function GuestDetails() {
                 </label>
                 <textarea
                   placeholder="Any Special Request"
-                  className="w-full border border-gray-300 rounded-md px-3 py-3 text-sm"
+                  className="w-full border border-gray-300 rounded-md px-3 py-3 text-sm h-30 resize-none hover:border-gray-400 focus:border-gray-500 focus:outline-none"
                 />
               </div>
 
               <button
                 type="button"
                 onClick={handlePayment}
-                className="w-full bg-[#5A2A17] text-white py-3 rounded-md text-sm hover:bg-[#7a3c23] transition"
+                className="w-full bg-[#A57865] text-white py-3 rounded-md text-sm hover:bg-[#7a3c23] transition"
               >
                 Continue to Payment
               </button>
@@ -177,39 +174,57 @@ export default function GuestDetails() {
           </div>
 
           {/* Booking Summary */}
-          <div className="border border-gray-200 shadow-md rounded-lg p-6">
+          <div className="border border-gray-200 shadow-md rounded-lg p-2 w-full max-w-md mx-auto">
             <Image
-              src="/images/Room1.png"
+              src="/images/Room4.png"
               alt="Booked Room"
               width={500}
               height={300}
-              className="rounded-md mb-4"
+              className="rounded-md mb-4 object-cover"
             />
-            <h3 className="text-lg font-semibold mb-4">Booking Details</h3>
-            <div className="space-y-2 text-sm text-gray-700">
-              <p>
-                <strong>Check-in:</strong> 22 Sept 2025
+
+            <h3 className="text-md font-semibold mb-4 px-4">Booking Details</h3>
+            <div className="space-y-2 text-sm text-gray-700 px-4">
+              <p className="flex justify-between">
+                <span className="font-medium">Check-in:</span>
+                <span>22 Sept 2025</span>
               </p>
-              <p>
-                <strong>Check-out:</strong> 24 Sept 2025
+              <p className="flex justify-between">
+                <span className="font-medium">Check-out:</span>
+                <span>24 Sept 2025</span>
               </p>
-              <p>
-                <strong>Guests:</strong> 2 Adults, 1 Child
+              <p className="flex justify-between">
+                <span className="font-medium">Guests:</span>
+                <span>2 Adults, 1 Child</span>
               </p>
             </div>
 
-            <h3 className="text-lg font-semibold mt-6 mb-2">Price Summary</h3>
-            <div className="text-sm text-gray-700 space-y-1">
-              <p>Executive Suite × 1</p>
-              <p>$250/night × 3 nights = $750</p>
-              <p>Subtotal: $750</p>
-              <p>Taxes & Fees: $75</p>
-              <p className="font-bold text-gray-900 text-base mt-2">
-                Total: $825
+            <h3 className="text-md font-semibold mt-6 mb-2 px-4">
+              Price Summary
+            </h3>
+            <div className="text-sm text-gray-700 space-y-1 px-4">
+              <p className="flex justify-between">
+                <span>Executive Suite × 1</span>
+              </p>
+              <p className="flex justify-between">
+                <span>$250/night × 3 nights</span>
+                <span>$750</span>
+              </p>
+              <p className="flex justify-between">
+                <span>Subtotal:</span>
+                <span>$750</span>
+              </p>
+              <p className="flex justify-between">
+                <span>Taxes & Fees:</span>
+                <span>$75</span>
+              </p>
+              <p className="flex justify-between font-bold text-gray-900 text-base mt-2">
+                <span>Total:</span>
+                <span>$825</span>
               </p>
             </div>
 
-            <button className="mt-4 w-full border border-gray-400 text-gray-600 rounded-md py-2 text-sm hover:bg-gray-100 transition">
+            <button className="mt-4 w-full border border-[#A57865] text-[#A57865] rounded-md py-2 text-sm hover:bg-gray-200 transition">
               Edit Selection
             </button>
           </div>
