@@ -8,7 +8,7 @@ export default function RoomsPage() {
       id: 1,
       title: "Deluxe King Room",
       price: 199,
-      description: "Spacious room with king bed, balcony & city view.",
+      description: "Spacio room with king bed, balcony & city view.",
       image: "/images/deluxekingroom.png",
       features: [
         "Kitchen",
@@ -48,9 +48,20 @@ export default function RoomsPage() {
   return (
     <section className="px-6 py-16 bg-white text-gray-800">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8 pt-10">
-          <h2 className="text-xl font-semibold">Rooms & Suites</h2>
-          <p className="text-gray-600 text-sm mt-2">Home / Rooms & Suites</p>
+        {/* Header with Filter link on the right */}
+        <div className="mb-8 pt-10 flex items-end justify-between">
+          <div>
+            <h2 className="text-xl font-semibold">Rooms & Suites</h2>
+            <p className="text-gray-600 text-sm mt-2">Home / Rooms & Suites</p>
+          </div>
+
+          {/* Clickable Filter → navigates to the full filterable listing */}
+          <Link
+            href="/booking/rooms"
+            className="text-sm text-[#A57865] hover:underline"
+          >
+            Filter
+          </Link>
         </div>
 
         {rooms.map((room) => (
@@ -99,8 +110,7 @@ export default function RoomsPage() {
               <Link href={`/rooms/${room.id}`}>
                 <button
                   className="mt-4 border border-[#5A2A17] text-[#5A2A17] px-4 py-2 rounded-sm text-sm 
-               hover:bg-[#f5ece8] transition duration-200 
-               active:scale-95"
+                  hover:bg-[#f5ece8] transition duration-200 active:scale-95"
                 >
                   View Details
                 </button>

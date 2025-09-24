@@ -46,7 +46,6 @@ export default function GuestDetails() {
   return (
     <section className="px-6 py-30 bg-white text-gray-800 font-sans">
       <div className="max-w-6xl mx-auto">
-        {/* ===== Stepper ===== */}
         <div className="mb-12 relative" ref={railRef}>
           <div
             className="absolute top-7 h-[2px] bg-gray-300 z-0"
