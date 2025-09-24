@@ -56,7 +56,7 @@ export default function ConfirmationPage() {
           <div className="flex justify-between items-center relative z-10">
             {steps.map((step, index) => {
               const stepNumber = index + 1;
-              const isCompleted = stepNumber <= currentStep;
+              // const isCompleted = stepNumber <= currentStep;
               const isCurrent = stepNumber === currentStep;
               return (
                 <div
