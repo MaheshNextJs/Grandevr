@@ -1,7 +1,8 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 /* ---------- dummy data ---------- */
@@ -62,7 +63,7 @@ function nightsBetween(a?: string, b?: string) {
   return diff;
 }
 
-export default function RoomsPage() {
+function RoomsPage() {
   const router = useRouter();
   const params = useSearchParams();
 
@@ -573,5 +574,13 @@ export default function RoomsPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function RoomsPageWithSuspense() {
+  return (
+    <Suspense fallback={<div className="p-6">Loading…</div>}>
+      <RoomsPage />
+    </Suspense>
   );
 }
