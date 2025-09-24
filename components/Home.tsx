@@ -1,10 +1,10 @@
-import Hero from "./Hero";
+import Hero from "./HomePage/Hero";
 import BookingForm from "./BookingForm";
-import Amenities from "@/components/Amenities";
-import RoomsAndSuites from "./RoomsAndSuites";
+import Amenities from "@/components/HomePage/Amenities";
+import RoomsAndSuites from "./HomePage/RoomsAndSuites";
 import DiningAndFacilities from "./DiningAndFacilities";
-import SpecialOffers from "./SpecialOffers";
-import GuestTestimonials from "./GuestTesimonials";
+import SpecialOffers from "./HomePage/SpecialOffers";
+import GuestTestimonials from "./HomePage/GuestTesimonials";
 
 export default function Home() {
   return (

@@ -1,4 +1,3 @@
-// app/pre-check-in/id-verification/page.tsx
 "use client";
 import IdVerificationPage from "@/components/IdVerificationPage";
 

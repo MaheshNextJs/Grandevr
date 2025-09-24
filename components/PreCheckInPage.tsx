@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const steps = [
-  "Reservation Login",
   "ID Verification",
   "Preferences",
   "Add-On Payment",
@@ -108,7 +107,7 @@ export default function PreCheckInPage() {
 
         {/* ===== Header Copy ===== */}
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold">Start Your Pre‑Check‑In</h1>
+          <h1 className="text-2xl font-semibold"> Pre‑Check‑In</h1>
           <p className="text-sm text-gray-600 mt-2">
             Retrieve your booking and save time at the front desk.
           </p>
