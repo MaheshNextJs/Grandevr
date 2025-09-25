@@ -1,46 +1,35 @@
-// app/layout.tsx
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "../styles/globals.css";
+import {
+  Geist as GeistSans,
+  Geist_Mono as GeistMono,
+  Inter,
+} from "next/font/google";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-
-const geistSans = Geist({
+const geistSans = GeistSans({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-const geistMono = Geist_Mono({
+const geistMono = GeistMono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Grandevr Travel",
-  description: "AI powered travel planner",
+export const metadata = {
+  title: "Grandeur App",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} font-sans antialiased`}
       >
-        {/* Navbar appears on all pages */}
-        <Navbar />
-
-        <main>{children}</main>
-
-        {/* Footer appears on all pages */}
-        <Footer />
+        {children}
       </body>
     </html>
   );

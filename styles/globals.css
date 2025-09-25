@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --admin-sidebar: 240px;
 }
 
 @theme inline {
@@ -11,6 +12,10 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+/* styles/globals.css */
+.shadow-right { box-shadow: 2px 0 6px rgba(140, 138, 138, 0.06); }
+
+
 
 @font-face {
   font-family: 'Nico Moji';
