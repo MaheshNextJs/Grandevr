@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { getPreRow } from "@/app/admin/dashboard/sidescreens/pre-check-in/data";
 
 type Props = {
@@ -13,27 +14,15 @@ type Props = {
   room: string; // e.g., "Deluxe King × 1"
   guestsLabel: string; // e.g., "2 Adults"
 
-  // Pre-check-in summary
-  // idVerified?: boolean; // default: true
+  // optional static text overrides
   preferences?: string; // e.g., "Vegetarian Meals"
   addOns?: string; // e.g., "Deluxe King × 1"
-  signatureCaptured?: boolean; // default: true
 
-  onReject?: (payload: {
-    reasons: {
-      idVerificationFailed: boolean;
-      mixingInvalidDocument: boolean;
-      missingInvalidDocument: boolean;
-      paymentIssue: boolean;
-      other: boolean;
-      mention: string;
-    };
-    allowResubmit: boolean;
-    notifyGuest: boolean;
-  }) => void;
+  onApproveNow?: () => void;
+  onKeepFlagged?: () => void;
 };
 
-export default function RejectPreCheckInModal({
+export default function ReviewPreCheckInModal({
   triggerClass = "rounded-sm border border-gray-300 bg-white px-4 py-2 text-[12px] text-gray-700 hover:bg-gray-50",
   reservationId,
   guestName,
@@ -41,26 +30,22 @@ export default function RejectPreCheckInModal({
   checkOutISO,
   room,
   guestsLabel,
-  // idVerified = true,
   preferences = "—",
   addOns = "None",
-  signatureCaptured = true,
-  onReject,
+  onApproveNow,
+  onKeepFlagged,
 }: Props) {
   const [open, setOpen] = useState(false);
 
-  // reasons
-  const [idVerificationFailed, setIdVerificationFailed] = useState(false);
-  const [mixingInvalidDocument, setMixingInvalidDocument] = useState(false);
-  const [missingInvalidDocument, setMissingInvalidDocument] = useState(false);
-  const [paymentIssue, setPaymentIssue] = useState(false);
-  const [other, setOther] = useState(false);
-  const [mention, setMention] = useState("");
-  const pre = getPreRow(reservationId);
+  // dropdown + notes
+  const [reason, setReason] = useState("ID Verification Failed");
+  const [notes, setNotes] = useState("Guest uploaded passport, name mismatch.");
 
-  // action settings
+  // options
   const [allowResubmit, setAllowResubmit] = useState(true);
   const [notifyGuest, setNotifyGuest] = useState(true);
+
+  const pre = getPreRow(reservationId);
 
   const fmt = (iso: string) =>
     new Date(iso).toLocaleDateString("en-US", {
@@ -69,66 +54,55 @@ export default function RejectPreCheckInModal({
       day: "numeric",
     });
 
-  const hasReason =
-    idVerificationFailed ||
-    mixingInvalidDocument ||
-    missingInvalidDocument ||
-    paymentIssue ||
-    (other && mention.trim().length > 0);
+  const resetClose = () => setOpen(false);
 
-  const reset = () => {
+  const handleKeepFlagged = () => {
+    onKeepFlagged?.();
     setOpen(false);
-    setIdVerificationFailed(false);
-    setMixingInvalidDocument(false);
-    setMissingInvalidDocument(false);
-    setPaymentIssue(false);
-    setOther(false);
-    setMention("");
-    setAllowResubmit(true);
-    setNotifyGuest(true);
   };
 
-  const submit = () => {
-    onReject?.({
-      reasons: {
-        idVerificationFailed,
-        mixingInvalidDocument,
-        missingInvalidDocument,
-        paymentIssue,
-        other,
-        mention: mention.trim(),
-      },
-      allowResubmit,
-      notifyGuest,
-    });
-    reset();
+  const handleApproveNow = () => {
+    onApproveNow?.();
+    setOpen(false);
   };
+
+  // icon helpers
+  const idIcon =
+    pre?.idVerification === "Verified"
+      ? "/icons/admin/verified1.png"
+      : pre?.idVerification === "Pending"
+      ? "/icons/admin/pending.png"
+      : "/icons/admin/flagged1.png";
+
+  const sigCaptured = pre?.signature === "Done";
+  const sigIcon = sigCaptured
+    ? "/icons/admin/verified1.png"
+    : "/icons/admin/pending.png";
 
   return (
     <>
       {/* Trigger */}
       <button className={triggerClass} onClick={() => setOpen(true)}>
-        Reject
+        Review
       </button>
 
       {!open ? null : (
-        // ⬇️ SCROLLABLE OVERLAY (changed)
         <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto">
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/40 backdrop-blur-[1px]"
-            onClick={reset}
+            onClick={resetClose}
           />
 
-          {/* Panel (not center-locked; uses top/bottom margin) */}
+          {/* Panel */}
           <div className="relative mx-auto my-10 w-[820px] max-w-[94vw] rounded-xl bg-white shadow-xl ring-1 ring-black/5">
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100">
               <h3 className="text-sm font-medium text-gray-900">
-                Reject / Flag Pre-Check-In
+                Review Pre-check-in
               </h3>
               <button
-                onClick={reset}
+                onClick={resetClose}
                 className="h-8 w-8 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-50"
                 aria-label="Close"
                 title="Close"
@@ -137,14 +111,13 @@ export default function RejectPreCheckInModal({
               </button>
             </div>
 
-            {/* Body (own scroll if long) */}
+            {/* Body */}
             <div className="px-5 py-4 space-y-4 text-sm max-h-[70vh] overflow-y-auto">
               {/* Reservation summary (top) */}
               <section className="rounded-lg border border-gray-200">
                 <div className="px-4 py-3 border-b border-gray-100 text-sm font-medium text-gray-900">
                   Reservation Summary
                 </div>
-                {/* <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3"> */}
                 <div className="p-4 space-y-3">
                   <SummaryRow label="Reservation ID" value={reservationId} />
                   <SummaryRow label="Name" value={guestName} />
@@ -168,92 +141,92 @@ export default function RejectPreCheckInModal({
                 <div className="px-4 py-3 border-b border-gray-100 text-sm font-medium text-gray-900">
                   Reservation Summary
                 </div>
-                {/* <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3"> */}
                 <div className="p-4 space-y-3">
                   <SummaryRow
                     label="ID Verification"
                     value={
                       <Badge
-                        ok={pre?.idVerification === "Verified"}
-                        okText="Verified"
-                        noText={pre?.idVerification ?? "Unknown"}
-                      />
+                        tone={
+                          pre?.idVerification === "Verified"
+                            ? "ok"
+                            : pre?.idVerification === "Pending"
+                            ? "warn"
+                            : "err"
+                        }
+                      >
+                        {pre?.idVerification ?? "Unknown"}
+                        <Image
+                          src={idIcon}
+                          alt="id status"
+                          width={12}
+                          height={12}
+                        />
+                      </Badge>
                     }
                   />
                   <SummaryRow
                     label="Preferences"
-                    value={
-                      pre?.preferences === "Set"
-                        ? "Vegetarian Meals"
-                        : "Not Set"
-                    }
+                    value={pre?.preferences === "Set" ? preferences : "Not Set"}
                   />
-
-                  <SummaryRow label="Add-Ons" value={pre?.addOns ?? "None"} />
-
+                  <SummaryRow label="Add-Ons" value={pre?.addOns ?? addOns} />
                   <SummaryRow
                     label="Digital Signature"
                     value={
-                      <Badge
-                        ok={signatureCaptured}
-                        okText="Captured"
-                        noText="Not Captured"
-                      />
+                      <Badge tone={sigCaptured ? "ok" : "warn"}>
+                        {sigCaptured ? "Captured" : "Not Captured"}
+                        <Image
+                          src={sigIcon}
+                          alt="signature"
+                          width={12}
+                          height={12}
+                        />
+                      </Badge>
                     }
                   />
                 </div>
               </section>
 
-              {/* Select reason */}
+              {/* Reason (dropdown) */}
               <section className="rounded-lg border border-gray-200">
                 <div className="px-4 py-3 border-b border-gray-100 text-sm font-medium text-gray-900">
-                  Select Reason
+                  Reason
                 </div>
-                <div className="p-4 space-y-3">
-                  <Check
-                    label="ID Verification Failed"
-                    checked={idVerificationFailed}
-                    onChange={setIdVerificationFailed}
-                  />
-                  <Check
-                    label="Mixing / Invalid Document"
-                    checked={mixingInvalidDocument}
-                    onChange={setMixingInvalidDocument}
-                  />
-                  <Check
-                    label="Missing / Invalid Document"
-                    checked={missingInvalidDocument}
-                    onChange={setMissingInvalidDocument}
-                  />
-                  <Check
-                    label="Payment Issue"
-                    checked={paymentIssue}
-                    onChange={setPaymentIssue}
-                  />
-                  <Check label="Other" checked={other} onChange={setOther} />
+                <div className="p-4">
+                  <div className="relative w-full">
+                    <select
+                      value={reason}
+                      onChange={(e) => setReason(e.target.value)}
+                      className="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pl-3 pr-8 text-sm"
+                    >
+                      <option>ID Verification Failed</option>
+                      <option>Missing / Invalid Document</option>
+                      <option>Mixing / Invalid Document</option>
+                      <option>Payment Issue</option>
+                      <option>Other</option>
+                    </select>
+                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
+                      ▾
+                    </span>
+                  </div>
 
-                  {/* Mention box */}
-                  <div className="pt-2">
-                    <div className="text-xs text-gray-500 mb-1">Mention it</div>
+                  {/* Notes */}
+                  <div className="mt-4">
+                    <div className="text-xs text-gray-500 mb-1">Notes</div>
                     <textarea
-                      rows={3}
-                      value={mention}
-                      onChange={(e) => setMention(e.target.value)}
-                      placeholder="Enter here"
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
+                      rows={4}
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                      placeholder="Add internal notes"
                     />
-                    <div className="mt-1 text-[11px] text-gray-500">
-                      Provide context if selecting{" "}
-                      <span className="font-medium">Other</span>.
-                    </div>
                   </div>
                 </div>
               </section>
 
-              {/* Action settings */}
+              {/* Options */}
               <section className="rounded-lg border border-gray-200">
                 <div className="px-4 py-3 border-b border-gray-100 text-sm font-medium text-gray-900">
-                  Action Settings
+                  Options
                 </div>
                 <div className="p-4 space-y-3">
                   <Check
@@ -262,7 +235,7 @@ export default function RejectPreCheckInModal({
                     onChange={setAllowResubmit}
                   />
                   <Check
-                    label="Notify guest by email (with reason)"
+                    label="Notify Guest by Email (with reason)"
                     checked={notifyGuest}
                     onChange={setNotifyGuest}
                   />
@@ -273,22 +246,22 @@ export default function RejectPreCheckInModal({
             {/* Footer */}
             <div className="px-5 py-3 border-t border-gray-100 bg-gray-50/50 flex justify-end gap-3">
               <button
-                onClick={reset}
+                onClick={resetClose}
                 className="rounded-md border border-gray-300 bg-white px-4 py-2 text-[12px] text-gray-700 hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
-                onClick={submit}
-                disabled={!hasReason}
-                className="rounded-md bg-[#A57865] text-white px-4 py-2 text-[12px] hover:opacity-95 disabled:opacity-50"
-                title={
-                  !hasReason
-                    ? "Select at least one reason or enter a note for 'Other'."
-                    : ""
-                }
+                onClick={handleKeepFlagged}
+                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-[12px] text-gray-700 hover:bg-gray-50"
               >
-                Reject &amp; Notify Guest
+                Keep Flagged
+              </button>
+              <button
+                onClick={handleApproveNow}
+                className="rounded-md bg-[#A57865] text-white px-4 py-2 text-[12px] hover:opacity-95"
+              >
+                Approve Now
               </button>
             </div>
           </div>
@@ -297,6 +270,8 @@ export default function RejectPreCheckInModal({
     </>
   );
 }
+
+/* ——— small shared bits ——— */
 
 function SummaryRow({
   label,
@@ -315,39 +290,24 @@ function SummaryRow({
   );
 }
 
-import Image from "next/image";
-
 function Badge({
-  ok,
-  okText,
-  noText,
+  tone,
+  children,
 }: {
-  ok: boolean;
-  okText: string;
-  noText: string;
+  tone: "ok" | "warn" | "err";
+  children: React.ReactNode;
 }) {
+  const cls =
+    tone === "ok"
+      ? "bg-emerald-50 text-emerald-700"
+      : tone === "warn"
+      ? "bg-amber-50 text-amber-700"
+      : "bg-rose-50 text-rose-700";
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-md px-2 py-1 text-xs font-medium ${
-        ok ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"
-      }`}
+      className={`inline-flex items-center gap-2 rounded-md px-2 py-1 text-xs font-medium ${cls}`}
     >
-      {ok ? okText : noText}
-      {ok ? (
-        <Image
-          src="/icons/admin/verified1.png"
-          alt="Pending"
-          width={12}
-          height={12}
-        />
-      ) : (
-        <Image
-          src="/icons/admin/flagged1.png"
-          alt="Pending"
-          width={12}
-          height={12}
-        />
-      )}
+      {children}
     </span>
   );
 }

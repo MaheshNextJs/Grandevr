@@ -68,7 +68,6 @@ export default function SendReminderFlow({
     try {
       setLoading(true);
       await onSend?.({ sendEmail, sendSMS });
-      // close first modal, open success
       setOpen(false);
       setSentOpen(true);
     } finally {
@@ -80,7 +79,7 @@ export default function SendReminderFlow({
     <>
       {/* Trigger button */}
       <button className={triggerClass} onClick={() => setOpen(true)}>
-        Send Reminder
+        Remind
       </button>
 
       {/* STEP 1: Compose modal */}

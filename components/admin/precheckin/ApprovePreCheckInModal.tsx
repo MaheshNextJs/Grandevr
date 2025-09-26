@@ -1,5 +1,6 @@
 "use client";
 
+import { getPreRow } from "@/app/admin/dashboard/sidescreens/pre-check-in/data";
 import { useMemo, useState } from "react";
 
 type Props = {
@@ -37,6 +38,7 @@ export default function ApprovePreCheckInModal({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
+  const pre = getPreRow(reservationId);
 
   const fmt = (iso: string) =>
     new Date(iso).toLocaleDateString("en-US", {
@@ -56,7 +58,7 @@ export default function ApprovePreCheckInModal({
     <>
       {/* Trigger */}
       <button className={triggerClass} onClick={() => setOpen(true)}>
-        Approve Pre-Check-In
+        Approve
       </button>
 
       {/* Approve modal */}
@@ -68,9 +70,11 @@ export default function ApprovePreCheckInModal({
             onClick={() => setOpen(false)}
           />
           {/* Modal */}
-          <div className="absolute left-1/2 top-1/2 w-[720px] max-w-[94vw] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-xl ring-1 ring-black/5">
+          {/* <div className="absolute left-1/2 top-1/2 w-[720px] max-w-[94vw] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-xl ring-1 ring-black/5"> */}
+          <div className="absolute left-1/2 top-1/2 w-[720px] max-w-[94vw] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-xl ring-1 ring-black/5 flex flex-col max-h-[90vh]">
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100">
+            {/* <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100"> */}
+            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 shrink-0">
               <h3 className="text-sm font-medium text-gray-900">
                 Approve Pre-Check-In
               </h3>
@@ -85,13 +89,15 @@ export default function ApprovePreCheckInModal({
             </div>
 
             {/* Body */}
-            <div className="px-5 py-4 space-y-4 text-sm">
+            {/* <div className="px-5 py-4 space-y-4 text-sm"> */}
+            <div className="px-5 py-4 space-y-4 text-sm overflow-y-auto grow">
               {/* Reservation summary (top) */}
               <section className="rounded-lg border border-gray-200">
                 <div className="px-4 py-3 border-b border-gray-100 text-sm font-medium text-gray-900">
                   Reservation Summary
                 </div>
-                <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3">
+                {/* was: grid grid-cols-1 md:grid-cols-2 ... */}
+                <div className="p-4 space-y-3">
                   <SummaryRow label="Reservation ID" value={reservationId} />
                   <SummaryRow label="Name" value={guestName} />
                   <SummaryRow
@@ -114,40 +120,84 @@ export default function ApprovePreCheckInModal({
                 <div className="px-4 py-3 border-b border-gray-100 text-sm font-medium text-gray-900">
                   Reservation Summary
                 </div>
-                <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3">
+                <div className="p-4 space-y-3">
                   <SummaryRow
                     label="ID Verification"
                     value={
                       <span
                         className={`inline-flex items-center gap-2 rounded-md px-2 py-1 text-xs font-medium ${
-                          idVerified
+                          pre?.idVerification === "Verified"
                             ? "bg-emerald-50 text-emerald-700"
                             : "bg-amber-50 text-amber-700"
                         }`}
                       >
-                        {idVerified ? "Verified" : "Pending"}
-                        <span className="text-xs">
-                          {idVerified ? "✓" : "⏳"}
-                        </span>
+                        {pre?.idVerification}
+                        {pre?.idVerification === "Verified" ? (
+                          <img
+                            src="/icons/admin/verified1.png"
+                            alt="Verified"
+                            width={12}
+                            height={12}
+                          />
+                        ) : pre?.idVerification === "Pending" ? (
+                          <img
+                            src="/icons/admin/pending.png"
+                            alt="Pending"
+                            width={12}
+                            height={12}
+                          />
+                        ) : (
+                          <img
+                            src="/icons/admin/flagged1.png"
+                            alt="Issue"
+                            width={12}
+                            height={12}
+                          />
+                        )}
                       </span>
                     }
                   />
-                  <SummaryRow label="Preferences" value={preferences} />
-                  <SummaryRow label="Add-Ons" value={addOns} />
+
+                  {/* <SummaryRow label="Preferences" value={preferences} /> */}
+                  <SummaryRow
+                    label="Preferences"
+                    value={
+                      pre?.preferences === "Set"
+                        ? "Vegetarian Meals"
+                        : "Not Set"
+                    }
+                  />
+                  {/* <SummaryRow label="Add-Ons" value={addOns} /> */}
+                  <SummaryRow label="Add-Ons" value={pre?.addOns ?? "None"} />
+
                   <SummaryRow
                     label="Digital Signature"
                     value={
                       <span
                         className={`inline-flex items-center gap-2 rounded-md px-2 py-1 text-xs font-medium ${
-                          signatureCaptured
+                          pre?.signature === "Done"
                             ? "bg-emerald-50 text-emerald-700"
                             : "bg-amber-50 text-amber-700"
                         }`}
                       >
-                        {signatureCaptured ? "Captured" : "Not Captured"}
-                        <span className="text-xs">
-                          {signatureCaptured ? "✓" : "⏳"}
-                        </span>
+                        {pre?.signature === "Done"
+                          ? "Captured"
+                          : "Not Captured"}
+                        {pre?.signature === "Done" ? (
+                          <img
+                            src="/icons/admin/verified1.png"
+                            alt="Captured"
+                            width={12}
+                            height={12}
+                          />
+                        ) : (
+                          <img
+                            src="/icons/admin/pending.png"
+                            alt="Pending"
+                            width={12}
+                            height={12}
+                          />
+                        )}
                       </span>
                     }
                   />
@@ -168,7 +218,8 @@ export default function ApprovePreCheckInModal({
             </div>
 
             {/* Footer */}
-            <div className="px-5 py-3 border-t border-gray-100 bg-gray-50/50 flex justify-end gap-3">
+            {/* <div className="px-5 py-3 border-t border-gray-100 bg-gray-50/50 flex justify-end gap-3"> */}
+            <div className="px-5 py-3 border-t border-gray-100 bg-gray-50/50 flex justify-end gap-3 shrink-0">
               <button
                 onClick={() => setOpen(false)}
                 className="rounded-md border border-gray-300 bg-white px-4 py-2 text-[12px] text-gray-700 hover:bg-gray-50"
@@ -255,9 +306,12 @@ function SummaryRow({
   value: React.ReactNode;
 }) {
   return (
-    <div className="grid grid-cols-12 items-start">
-      <div className="col-span-5 text-xs text-gray-500">{label}:</div>
-      <div className="col-span-7 text-gray-900">{value}</div>
+    <div className="flex items-start justify-between gap-4">
+      <div className="text-xs text-gray-500">{label}</div>
+      <div className="text-gray-900 text-right ml-4 min-w-0">
+        {/* allow wrapping for long content on the right */}
+        <div className="whitespace-normal break-words">{value}</div>
+      </div>
     </div>
   );
 }

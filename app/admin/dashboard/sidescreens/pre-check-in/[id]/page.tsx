@@ -4,8 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { use } from "react";
 import { findBestPreId, getPreRow, type PreIdStatus } from "../data";
-
-// ⬇️ your existing modals/flows
 import SendReminderFlow from "@/components/admin/precheckin/SendReminderFlow";
 import RejectPreCheckInModal from "@/components/admin/precheckin/RejectPreCheckInModal";
 import ApprovePreCheckInModal from "@/components/admin/precheckin/ApprovePreCheckInModal";
@@ -22,7 +20,6 @@ export default function PreCheckInDetails({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // Next 15: unwrap promise-based params
   const { id } = use(params);
   const best = findBestPreId(id);
   if (!best) {
@@ -111,15 +108,15 @@ export default function PreCheckInDetails({
         <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
           <div>
             <div className="text-gray-500 text-xs mb-1">Name</div>
-            <div className="text-gray-900">{pre.guest}</div>
+            <div className="text-gray-900">{pre.guestName}</div>
           </div>
           <div>
             <div className="text-gray-500 text-xs mb-1">Phone</div>
-            <div className="text-gray-900">—</div>
+            <div className="text-gray-900">{pre.phone}</div>
           </div>
           <div>
             <div className="text-gray-500 text-xs mb-1">Email</div>
-            <div className="text-gray-900">—</div>
+            <div className="text-gray-900">{pre.email}</div>
           </div>
         </div>
       </section>
@@ -136,13 +133,14 @@ export default function PreCheckInDetails({
               {pre.dates}
             </div>
           </div>
+
           <div>
             <div className="text-gray-500 text-xs mb-1">Room Type</div>
             <div className="text-gray-900">{pre.roomType}</div>
           </div>
           <div>
             <div className="text-gray-500 text-xs mb-1">Guests</div>
-            <div className="text-gray-900">—</div>
+            <div className="text-gray-900">{pre.guests}</div>
           </div>
         </div>
       </section>
@@ -258,18 +256,71 @@ export default function PreCheckInDetails({
             </span>
           ) : (
             <span className="inline-flex items-center gap-2 rounded-md bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-700">
-              ⚠️ Attention Required
+              <Image
+                src="/icons/admin/flagged1.png"
+                alt="Flagged"
+                width={12}
+                height={12}
+                className="inline-block"
+              />
+              Attention Required
             </span>
           )}
         </div>
       </section>
 
       {/* ⬇️ Footer Actions (restored) */}
+
       <div className="flex items-center justify-end gap-3">
+        {pre.idVerification === "Pending" ? (
+          <SendReminderFlow
+            triggerClass="rounded-sm bg-[#A57865] text-white px-4 py-2 text-[12px] hover:opacity-95"
+            reservationId={pre.id}
+            guestName={pre.guestName}
+            guestEmail={guestEmail}
+            guestPhone={guestPhone}
+            checkInISO={checkInISO}
+            checkOutISO={checkOutISO}
+            room={`${pre.roomType} × 1`}
+            guestsLabel={guestsLabel}
+            onSend={async () => {}}
+          />
+        ) : pre.idVerification === "Verified" && pre.signature === "Done" ? (
+          <ApprovePreCheckInModal
+            reservationId={pre.id}
+            guestName={pre.guestName}
+            checkInISO={checkInISO}
+            checkOutISO={checkOutISO}
+            room={`${pre.roomType} × 1`}
+            guestsLabel={pre.guests}
+            idVerified={true}
+            preferences={pre.preferences === "Set" ? "Vegetarian Meals" : "—"}
+            addOns={pre.addOns}
+            signatureCaptured={true}
+            onApprove={() => {}}
+          />
+        ) : (
+          <RejectPreCheckInModal
+            triggerClass="rounded-sm bg-[#A57865] text-white px-4 py-2 text-[12px] hover:opacity-95"
+            reservationId={pre.id}
+            guestName={pre.guestName}
+            checkInISO={checkInISO}
+            checkOutISO={checkOutISO}
+            room={`${pre.roomType} × 1`}
+            guestsLabel={pre.guests}
+            preferences={pre.preferences === "Set" ? "Vegetarian Meals" : "—"}
+            addOns={pre.addOns}
+            signatureCaptured={pre.signature === "Done"}
+            onReject={() => {}}
+          />
+        )}
+      </div>
+
+      {/* <div className="flex items-center justify-end gap-3">
         <SendReminderFlow
           triggerClass="rounded-sm bg-[#A57865] text-white px-4 py-2 text-[12px] hover:opacity-95"
           reservationId={pre.id}
-          guestName={pre.guest}
+          guestName={pre.guests}
           guestEmail={guestEmail}
           guestPhone={guestPhone}
           checkInISO={checkInISO}
@@ -282,12 +333,12 @@ export default function PreCheckInDetails({
         <RejectPreCheckInModal
           triggerClass="rounded-sm bg-[#A57865] text-white px-4 py-2 text-[12px] hover:opacity-95"
           reservationId={pre.id}
-          guestName={pre.guest}
+          guestName={pre.guestName}
           checkInISO={checkInISO}
           checkOutISO={checkOutISO}
           room={`${pre.roomType} × 1`}
-          guestsLabel={guestsLabel}
-          idVerified={pre.idVerification === "Verified"}
+          guestsLabel={pre.guests}
+          // idVerified={pre.idVerification === "Verified"}
           preferences={pre.preferences === "Set" ? "Vegetarian Meals" : "—"}
           addOns={pre.addOns}
           signatureCaptured={pre.signature === "Done"}
@@ -296,18 +347,18 @@ export default function PreCheckInDetails({
 
         <ApprovePreCheckInModal
           reservationId={pre.id}
-          guestName={pre.guest}
+          guestName={pre.guestName}
           checkInISO={checkInISO}
           checkOutISO={checkOutISO}
           room={`${pre.roomType} × 1`}
-          guestsLabel={guestsLabel}
+          guestsLabel={pre.guests}
           idVerified={pre.idVerification === "Verified"}
           preferences={pre.preferences === "Set" ? "Vegetarian Meals" : "—"}
           addOns={pre.addOns}
           signatureCaptured={pre.signature === "Done"}
           onApprove={() => {}}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

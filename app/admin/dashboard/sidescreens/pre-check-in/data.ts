@@ -5,128 +5,161 @@ export type PreStatus = "Completed" | "Pending";
 export type RoomType = "Deluxe" | "Executive" | "Suite";
 
 export type Row = {
-  id: string; // HT12345, HT12345-2, ...
-  guest: string; // John Doe
-  dates: string; // 20–23 Sept
+  id: string;
+  guestName: string;
+  guests: string;
+  dates: string;
   roomType: RoomType;
-  status: PreStatus; // main status in table
+  status: PreStatus;
   idVerification: PreIdStatus;
   preferences: "Set" | "Not Set";
   addOns: "None" | "Breakfast" | "Pickup" | "Breakfast, Pickup";
   signature: "Done" | "None";
+  phone?: string;
+  email?: string;
 };
 
-// ⬇️ paste your MOCK rows here unchanged (renamed to PRE_ROWS)
+// ⬇️ MOCK rows
 export const PRE_ROWS: Row[] = [
   {
     id: "HT12345",
-    guest: "John Doe",
-    dates: "20–23 Sept",
+    guestName: "John Doe",
+    guests: "2 Adults",
+    dates: "20 Sep 2025–23 Sep 2025",
     roomType: "Deluxe",
     status: "Completed",
     idVerification: "Verified",
     preferences: "Set",
     addOns: "Breakfast",
     signature: "Done",
+    phone: "+91 98765 43210",
+    email: "john.doe@example.com",
   },
   {
     id: "HT12345-2",
-    guest: "John Doe",
-    dates: "20–23 Sept",
+    guestName: "John Doe",
+    guests: "1 Adult, 1 Child",
+    dates: "20 Sep 2025–23 Sep 2025",
     roomType: "Executive",
     status: "Pending",
     idVerification: "Pending",
     preferences: "Not Set",
     addOns: "None",
     signature: "Done",
+    phone: "+91 98765 43210",
+    email: "john.doe@example.com",
   },
   {
     id: "HT12345-3",
-    guest: "John Doe",
-    dates: "20–23 Sept",
+    guestName: "John Doe",
+    guests: "3 Adults",
+    dates: "20 Sep 2025–23 Sep 2025",
     roomType: "Suite",
     status: "Completed",
     idVerification: "Flagged",
     preferences: "Set",
     addOns: "Pickup",
     signature: "Done",
+    phone: "+91 98765 43210",
+    email: "john.doe@example.com",
   },
   {
     id: "HT12345-4",
-    guest: "John Doe",
-    dates: "20–23 Sept",
+    guestName: "John Doe",
+    guests: "2 Adults, 1 Child",
+    dates: "20 Sep 2025–23 Sep 2025",
     roomType: "Suite",
     status: "Completed",
     idVerification: "Issue Detected",
     preferences: "Set",
     addOns: "None",
     signature: "None",
+    phone: "+91 98765 43210",
+    email: "john.doe@example.com",
   },
   {
     id: "HT12345-5",
-    guest: "John Doe",
-    dates: "20–23 Sept",
+    guestName: "John Doe",
+    guests: "2 Adults",
+    dates: "20 Sep 2025–23 Sep 2025",
     roomType: "Suite",
     status: "Completed",
     idVerification: "Verified",
     preferences: "Set",
     addOns: "None",
     signature: "None",
+    phone: "+91 98765 43210",
+    email: "john.doe@example.com",
   },
   {
     id: "HT12345-6",
-    guest: "John Doe",
-    dates: "20–23 Sept",
+    guestName: "John Doe",
+    guests: "1 Adult",
+    dates: "20 Sep 2025–23 Sep 2025",
     roomType: "Suite",
     status: "Completed",
     idVerification: "Verified",
     preferences: "Set",
     addOns: "None",
     signature: "None",
+    phone: "+91 98765 43210",
+    email: "john.doe@example.com",
   },
   {
     id: "HT12345-7",
-    guest: "John Doe",
-    dates: "20–23 Sept",
+    guestName: "John Doe",
+    guests: "2 Adults",
+    dates: "20 Sep 2025–23 Sep 2025",
     roomType: "Suite",
     status: "Completed",
     idVerification: "Verified",
     preferences: "Set",
     addOns: "None",
     signature: "None",
+    phone: "+91 98765 43210",
+    email: "john.doe@example.com",
   },
   {
     id: "HT12345-8",
-    guest: "John Doe",
-    dates: "20–23 Sept",
+    guestName: "John Doe",
+    guests: "2 Adults, 2 Children",
+    dates: "20 Sep 2025–23 Sep 2025",
     roomType: "Suite",
     status: "Completed",
     idVerification: "Verified",
     preferences: "Set",
     addOns: "None",
     signature: "None",
+    phone: "+91 98765 43210",
+    email: "john.doe@example.com",
   },
   {
     id: "HT12345-9",
-    guest: "John Doe",
-    dates: "20–23 Sept",
+    guestName: "John Doe",
+    guests: "3 Adults",
+    dates: "20 Sep 2025–23 Sep 2025",
     roomType: "Suite",
     status: "Completed",
     idVerification: "Verified",
     preferences: "Set",
     addOns: "None",
     signature: "None",
+    phone: "+91 98765 43210",
+    email: "john.doe@example.com",
   },
   {
     id: "HT12345-10",
-    guest: "John Doe",
-    dates: "20–23 Sept",
+    guestName: "John Doe",
+    guests: "2 Adults",
+    dates: "20 Sep 2025–23 Sep 2025",
     roomType: "Suite",
     status: "Completed",
     idVerification: "Verified",
     preferences: "Set",
     addOns: "None",
     signature: "None",
+    phone: "+91 98765 43210",
+    email: "john.doe@example.com",
   },
 ];
 

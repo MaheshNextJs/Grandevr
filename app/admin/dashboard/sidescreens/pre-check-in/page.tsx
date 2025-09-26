@@ -9,6 +9,10 @@ import {
   type PreStatus,
   type PreIdStatus,
 } from "./data";
+import ApprovePreCheckInModal from "@/components/admin/precheckin/ApprovePreCheckInModal";
+import RejectPreCheckInModal from "@/components/admin/precheckin/RejectPreCheckInModal";
+import SendReminderFlow from "@/components/admin/precheckin/SendReminderFlow";
+import ReviewPreCheckInModal from "@/components/admin/precheckin/ReviewPreCheckInModal";
 
 type Row = (typeof PRE_ROWS)[number];
 
@@ -31,9 +35,9 @@ const ID_PILL: Record<PreIdStatus, string> = {
 
 const ID_ICON_SRC: Record<PreIdStatus, string> = {
   Verified: "/icons/admin/verified1.png",
-  Pending: "/icons/admin/verified1.png",
+  Pending: "/icons/admin/pending.png",
   Flagged: "/icons/admin/flagged1.png",
-  "Issue Detected": "/icons/admin/verified1.png",
+  "Issue Detected": "/icons/admin/flagged1.png",
 };
 
 const STATUS_PILL: Record<PreStatus, string> = {
@@ -57,11 +61,10 @@ export default function Page() {
     const filtered = PRE_ROWS.filter((r) => {
       const q =
         r.id.toLowerCase().includes(query.toLowerCase()) ||
-        r.guest.toLowerCase().includes(query.toLowerCase());
+        r.guestName.toLowerCase().includes(query.toLowerCase());
       const rt =
         roomType === "All Room Types" || r.roomType === (roomType as RoomType);
       const st = status === "All Status" || r.status === (status as PreStatus);
-
       return q && rt && st;
     });
     const start = (page - 1) * pageSize;
@@ -72,7 +75,7 @@ export default function Page() {
     return PRE_ROWS.filter((r) => {
       const q =
         r.id.toLowerCase().includes(query.toLowerCase()) ||
-        r.guest.toLowerCase().includes(query.toLowerCase());
+        r.guestName.toLowerCase().includes(query.toLowerCase());
       const rt =
         roomType === "All Room Types" || r.roomType === (roomType as RoomType);
       const st = status === "All Status" || r.status === (status as PreStatus);
@@ -90,10 +93,23 @@ export default function Page() {
     setPage(1);
   };
 
-  // actions (demo)
-  const onApprove = (id: string) => alert(`Approved pre-check-in for ${id}`);
-  const onReject = (id: string) => alert(`Rejected pre-check-in for ${id}`);
-  const onRemind = (id: string) => alert(`Reminder sent to ${id}`);
+  // // actions (demo fallbacks)
+  // const onApprove = (id: string) => alert(`Approved pre-check-in for ${id}`);
+  // const onReject = (id: string) => alert(`Rejected pre-check-in for ${id}`);
+  // const onRemind = (id: string) => alert(`Reminder sent to ${id}`);
+
+  const nowISO = new Date().toISOString();
+  const twoDaysISO = new Date(
+    Date.now() + 2 * 24 * 60 * 60 * 1000
+  ).toISOString();
+
+  // function onRemind(id: string): void | Promise<void> {
+  //   throw new Error("Function not implemented.");
+  // }
+  // const onRemind = async (id: string) => {
+  // TODO: call your API to send the reminder
+  // alert(`Reminder sent to ${id}`);
+  // };
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -192,7 +208,7 @@ export default function Page() {
             </div>
           </div>
 
-          {/* Source (kept for parity) */}
+          {/* Source */}
           <div className="md:pt-6">
             <div className="text-[11px] text-gray-500 mb-1">Source</div>
             <div className="relative">
@@ -219,33 +235,36 @@ export default function Page() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-gray-500 text-xs">
-                <th className="py-3 font-medium">Reservation ID</th>
-                <th className="py-3 font-medium">Guest Name</th>
-                <th className="py-3 font-medium">Dates</th>
-                <th className="py-3 font-medium">Room Type</th>
-                <th className="py-3 font-medium">Status</th>
-                <th className="py-3 font-medium">ID Verification</th>
-                <th className="py-3 font-medium">Preferences</th>
-                <th className="py-3 font-medium">Add-Ons</th>
-                <th className="py-3 font-medium">Signature</th>
-                <th className="py-3 font-medium text-right pr-2">Action</th>
+              <tr className="text-gray-500 text-xs">
+                <th className="py-3 font-medium text-center">Reservation ID</th>
+                <th className="py-3 font-medium text-center">Guest Name</th>
+                <th className="py-3 font-medium text-center">Dates</th>
+                <th className="py-3 font-medium text-center">Room Type</th>
+                <th className="py-3 font-medium text-center">Status</th>
+                <th className="py-3 font-medium text-center">
+                  ID Verification
+                </th>
+                <th className="py-3 font-medium text-center">Preferences</th>
+                <th className="py-3 font-medium text-center">Add-Ons</th>
+                <th className="py-3 font-medium text-center">Signature</th>
+                <th className="py-3 font-medium text-center">Action</th>
               </tr>
             </thead>
+
             <tbody>
               {rows.map((r) => (
                 <tr
                   key={r.id}
                   className="border-t border-gray-100 text-gray-700"
                 >
-                  <td className="py-4">{r.id}</td>
-                  <td className="py-4">{r.guest}</td>
-                  <td className="py-4">{r.dates}</td>
-                  <td className="py-4">{r.roomType}</td>
-                  <td className="py-4">
+                  <td className="py-4 text-center">{r.id}</td>
+                  <td className="py-4 text-center">{r.guestName}</td>
+                  <td className="py-4 text-center">{r.dates}</td>
+                  <td className="py-4 text-center">{r.roomType}</td>
+                  <td className="py-2 text-center whitespace-nowrap">
                     <span className={STATUS_PILL[r.status]}>{r.status}</span>
                   </td>
-                  <td className="py-4">
+                  <td className="py-2 text-center whitespace-nowrap">
                     <span className={ID_PILL[r.idVerification]}>
                       <span>{r.idVerification}</span>
                       <Image
@@ -257,41 +276,86 @@ export default function Page() {
                       />
                     </span>
                   </td>
-                  <td className="py-4">{r.preferences}</td>
-                  <td className="py-4">{r.addOns}</td>
-                  <td className="py-4">{r.signature}</td>
-                  <td className="py-3">
-                    <div className="flex items-center justify-end gap-2 pr-1">
+                  <td className="py-4 text-center">{r.preferences}</td>
+                  <td className="py-4 text-center">{r.addOns}</td>
+                  <td className="py-4 text-center">{r.signature}</td>
+
+                  {/* Actions */}
+                  <td className="py-4 align-middle">
+                    <div className="inline-flex items-center justify-end gap-2 pr-1 whitespace-nowrap">
+                      {/* View (always) */}
                       <Link
                         href={`/admin/dashboard/sidescreens/pre-check-in/${r.id}`}
-                        className="rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-[12px] text-gray-700 hover:bg-gray-50"
+                        className="w-[84px] text-center rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-[12px] text-gray-700 hover:bg-gray-50"
                       >
                         View
                       </Link>
 
+                      {/* One action only, based on status & verification */}
+
                       {r.status === "Pending" ? (
-                        <button
-                          onClick={() => onRemind(r.id)}
-                          className="rounded-sm bg-[#A57865] text-white px-3 py-1.5 text-[12px] hover:opacity-95"
-                        >
-                          Remind
-                        </button>
-                      ) : r.idVerification === "Flagged" ||
-                        r.idVerification === "Issue Detected" ? (
-                        <button
-                          onClick={() => onReject(r.id)}
-                          className="rounded-sm bg-[#A57865] text-white px-3 py-1.5 text-[12px] hover:opacity-95"
-                        >
-                          Reject
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => onApprove(r.id)}
-                          className="rounded-sm bg-[#A57865] text-white px-3 py-1.5 text-[12px] hover:opacity-95"
-                        >
-                          Approve
-                        </button>
-                      )}
+                        <SendReminderFlow
+                          triggerClass="w-[84px] rounded-sm bg-[#A57865] text-white px-3 py-1.5 text-[12px] hover:opacity-95"
+                          reservationId={r.id}
+                          guestName={r.guestName}
+                          guestEmail={r.email ?? "guest@example.com"}
+                          guestPhone={r.phone ?? "—"}
+                          checkInISO={nowISO}
+                          checkOutISO={twoDaysISO}
+                          room={`${r.roomType} × 1`}
+                          guestsLabel={r.guests}
+                          // onSend={() => onRemind(r.id)}
+                        />
+                      ) : r.idVerification === "Issue Detected" ? (
+                        <ReviewPreCheckInModal
+                          triggerClass="w-[84px] rounded-sm bg-[#A57865] text-white px-3 py-1.5 text-[12px] hover:opacity-95"
+                          reservationId={r.id}
+                          guestName={r.guestName}
+                          checkInISO={nowISO}
+                          checkOutISO={twoDaysISO}
+                          room={`${r.roomType} × 1`}
+                          guestsLabel={r.guests}
+                          preferences={
+                            r.preferences === "Set" ? "Vegetarian Meals" : "—"
+                          }
+                          addOns={r.addOns}
+                          // onApproveNow={() => onApprove(r.id)}
+                          onKeepFlagged={() => {}}
+                        />
+                      ) : r.idVerification === "Flagged" ? (
+                        <RejectPreCheckInModal
+                          triggerClass="w-[84px] rounded-sm bg-[#A57865] text-white px-3 py-1.5 text-[12px] hover:opacity-95"
+                          reservationId={r.id}
+                          guestName={r.guestName}
+                          checkInISO={nowISO}
+                          checkOutISO={twoDaysISO}
+                          room={`${r.roomType} × 1`}
+                          guestsLabel={r.guests}
+                          preferences={
+                            r.preferences === "Set" ? "Vegetarian Meals" : "—"
+                          }
+                          addOns={r.addOns}
+                          signatureCaptured={r.signature === "Done"}
+                          // onReject={() => onReject(r.id)}
+                        />
+                      ) : r.idVerification === "Verified" ? (
+                        <ApprovePreCheckInModal
+                          triggerClass="w-[84px] rounded-sm bg-[#A57865] text-white px-3 py-1.5 text-[12px] hover:opacity-95"
+                          reservationId={r.id}
+                          guestName={r.guestName}
+                          checkInISO={nowISO}
+                          checkOutISO={twoDaysISO}
+                          room={`${r.roomType} × 1`}
+                          guestsLabel={r.guests}
+                          idVerified={true}
+                          preferences={
+                            r.preferences === "Set" ? "Vegetarian Meals" : "—"
+                          }
+                          addOns={r.addOns}
+                          signatureCaptured={r.signature === "Done"}
+                          // onApprove={() => onApprove(r.id)}
+                        />
+                      ) : null}
                     </div>
                   </td>
                 </tr>
