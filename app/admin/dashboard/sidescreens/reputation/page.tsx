@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   REVIEWS,
   SOURCES,
   type Review,
   sentimentTone,
   computeStats,
+  reviewStatusTone,
 } from "./data";
 import Link from "next/link";
 
@@ -87,7 +89,7 @@ export default function Page() {
   }, [query, source, fromDate, toDate]);
 
   const stats = useMemo(() => computeStats(filtered), [filtered]);
-
+  const router = useRouter();
   // pagination
   const pageSize = 10;
   const [page, setPage] = useState(1);
@@ -106,19 +108,111 @@ export default function Page() {
     return Array.from({ length: last - first + 1 }, (_, i) => first + i);
   }, [page, totalPages]);
 
+  // Action buttons renderer (matches your screenshot behavior)
+  const renderActions = (r: Review) => {
+    const BaseBtn =
+      "h-8 w-[84px] px-3 rounded-md border border-gray-200 bg-white text-[10px] text-gray-700 hover:bg-gray-50";
+    const PrimaryBtn =
+      "h-8 w-[84px] rounded-md bg-[#A57865] text-white text-[10px] hover:opacity-90";
+
+    const status = (r.status || "").toLowerCase();
+
+    // const viewBtn = (
+    //   <button onClick={() => console.log("View", r.id)} className={BaseBtn}>
+    //     View
+    //   </button>
+    // );
+    // inside renderActions(r)
+    const viewBtn = (
+      <button
+        onClick={() =>
+          router.push(`/admin/dashboard/sidescreens/reputation/${r.id}`)
+        }
+        className={BaseBtn}
+      >
+        View
+      </button>
+    );
+
+    const viewTaskBtn = (
+      <button
+        onClick={() => console.log("View Task", r.id)}
+        className={PrimaryBtn}
+      >
+        View Task
+      </button>
+    );
+    const respondAiBtn = (
+      <button
+        onClick={() => console.log("Respond AI", r.id)}
+        className={BaseBtn}
+      >
+        Respond AI
+      </button>
+    );
+    const escalateBtn = (
+      <button
+        onClick={() => console.log("Escalate", r.id)}
+        className={PrimaryBtn}
+      >
+        Escalate
+      </button>
+    );
+
+    if (status === "responded") {
+      return <div className="flex items-center gap-2">{viewBtn}</div>;
+    }
+    if (status === "escalated") {
+      // Show only View + View Task (no Escalate button)
+      return (
+        <div className="flex items-center gap-2">
+          {viewBtn}
+          {viewTaskBtn}
+        </div>
+      );
+    }
+    if (status === "escalated") {
+      return (
+        <div className="flex items-center gap-2">
+          {viewBtn}
+          {viewTaskBtn}
+          {escalateBtn}
+        </div>
+      );
+    }
+    if (status === "pending" || status === "critical") {
+      return (
+        <div className="flex items-center gap-2">
+          {viewBtn}
+          {respondAiBtn}
+          {escalateBtn}
+        </div>
+      );
+    }
+
+    // default / no status
+    return (
+      <div className="flex items-center gap-2">
+        {viewBtn}
+        {respondAiBtn}
+        {escalateBtn}
+      </div>
+    );
+  };
+
   return (
-    <div className="rounded-2xl border bg-white p-6 md:p-8">
+    <div className="rounded-2xl bg-white">
       <nav className="text-[12px] text-gray-500 flex items-center space-x-1">
         <Link href="/admin/dashboard" className="hover:underline">
           Dashboard
         </Link>
         <span className="text-gray-400">›</span>
-        <span className="text-gray-700 font-medium">Staff Management</span>
+        <span className="text-gray-700 font-medium">Reputation</span>
       </nav>
 
       <h1 className="text-2xl font-semibold mb-2">Reputation</h1>
 
-      {/* Filter card (your staff-style block, adapted) */}
+      {/* Filter card */}
       <div className="rounded-xl border border-gray-200 shadow-sm bg-white">
         <div className="px-6 py-4">
           <div className="flex items-center gap-3">
@@ -147,7 +241,7 @@ export default function Page() {
                 Filter
               </div>
               <div className="text-[11px] text-gray-500 mb-1">Source</div>
-              <div className=" max-w-xs">
+              <div className="max-w-xs relative">
                 <select
                   value={source}
                   onChange={(e) => setSource(e.target.value as any)}
@@ -165,7 +259,7 @@ export default function Page() {
               </div>
               <button
                 onClick={clearAll}
-                className="mt-4  inline-flex rounded-md border border-[#A57865] bg-white px-3 py-1.5 text-xs text-[#A57865] hover:bg-red-100"
+                className="mt-4 inline-flex rounded-md border border-[#A57865] bg-white px-3 py-1.5 text-xs text-[#A57865] hover:bg-red-100"
               >
                 Clear all filter
               </button>
@@ -225,10 +319,8 @@ export default function Page() {
       </div>
 
       {/* Table */}
-      {/* Table */}
       <div className="rounded-xl border border-gray-200 shadow-sm bg-white">
         <div className="px-6 pb-4">
-          {/* Scrollable table */}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -237,7 +329,7 @@ export default function Page() {
                   <th className="py-3 font-medium text-center">Guest</th>
                   <th className="py-3 font-medium text-center">Source</th>
                   <th className="py-3 font-medium text-center">Rating</th>
-                  <th className="py-3 font-medium text-center">Sentiment</th>
+                  <th className="py-3 font-medium text-center">Review</th>
                   <th className="py-3 font-medium text-center">Status</th>
                   <th className="py-3 font-medium text-center">Sentiment</th>
                   <th className="py-3 font-medium text-center">Action</th>
@@ -251,18 +343,22 @@ export default function Page() {
                       key={r.id}
                       className="border-t border-gray-100 text-gray-700"
                     >
-                      <td className="py-4 text-center">
+                      <td className="py-4 text-center text-[12px]">
                         {new Date(r.date).toLocaleDateString(undefined, {
                           month: "short",
                           day: "2-digit",
                         })}
                       </td>
-                      <td className="py-4 text-center">{r.guest}</td>
-                      <td className="py-4 text-center">{r.source}</td>
-                      <td className="py-4 text-center">
+                      <td className="py-4 text-center text-[12px]">
+                        {r.guest}
+                      </td>
+                      <td className="py-4 text-center text-[12px]">
+                        {r.source}
+                      </td>
+                      <td className="py-4 text-center text-[12px]">
                         <StarRating value={r.rating} />
                       </td>
-                      <td className="py-4 text-center">
+                      <td className="py-4 text-centertext-[12px]">
                         <span
                           className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${tone.badge}`}
                         >
@@ -271,44 +367,31 @@ export default function Page() {
                       </td>
                       <td className="py-4 text-center">
                         {r.status ? (
-                          <span className="inline-flex items-center gap-1 rounded-md bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700">
+                          <span
+                            className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${
+                              reviewStatusTone[r.status].bg
+                            } ${reviewStatusTone[r.status].text}`}
+                          >
                             {r.status}
+                            {r.status === "Critical" && (
+                              <Image
+                                src="/icons/admin/critical.png" // ✅ your local icon (placed in /public/icons/)
+                                alt="Critical"
+                                width={12}
+                                height={12}
+                              />
+                            )}
                           </span>
                         ) : (
-                          <span className="text-gray-400">-</span>
+                          <span className="text-gray-400 text-[12px]">-</span>
                         )}
                       </td>
                       <td className="py-4 text-gray-600">
-                        <span className="line-clamp-1">"{r.comment}"</span>
+                        <span className="line-clamp-1 text-[14px]">
+                          "{r.comment}"
+                        </span>
                       </td>
-                      <td className="py-4">
-                        <div className="flex items-center gap-2">
-                          {/* View */}
-                          <button
-                            onClick={() => console.log("View", r.id)}
-                            className="h-8 w-[72px] px-3 rounded-md border border-gray-200 bg-white text-xs text-gray-700 hover:bg-gray-50"
-                          >
-                            View
-                          </button>
-
-                          {/* Track for Escalated, otherwise Respond */}
-                          {r.status === "Escalated" ? (
-                            <button
-                              onClick={() => console.log("Track", r.id)}
-                              className="h-8 w-[72px] rounded-md bg-[#A57865] text-white text-xs hover:opacity-90"
-                            >
-                              Track
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => console.log("Respond", r.id)}
-                              className="h-8 w-[72px] rounded-md bg-[#A57865] text-white text-xs hover:opacity-90"
-                            >
-                              Respond
-                            </button>
-                          )}
-                        </div>
-                      </td>
+                      <td className="py-4">{renderActions(r)}</td>
                     </tr>
                   );
                 })}
@@ -336,7 +419,7 @@ export default function Page() {
             </p>
 
             <div className="flex items-center gap-1">
-              {/* Prev button */}
+              {/* Prev */}
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
@@ -360,7 +443,7 @@ export default function Page() {
                 </button>
               ))}
 
-              {/* Next button */}
+              {/* Next */}
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}

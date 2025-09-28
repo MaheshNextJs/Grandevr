@@ -1,6 +1,15 @@
 // --- types ---
 export type Sentiment = "Positive" | "Neutral" | "Negative";
 
+// Add a richer status union (matches your UI logic)
+export type ReviewStatus =
+  | "Responded"
+  | "Escalated"
+  | "Pending"
+  | "Critical"
+  | "";
+
+// Keep the Review type name the same so imports don’t break
 export type Review = {
   id: string;
   date: string; // ISO (e.g., "2025-09-21")
@@ -8,7 +17,7 @@ export type Review = {
   source: string; // e.g., "Google"
   rating: 1 | 2 | 3 | 4 | 5;
   sentiment: Sentiment;
-  status?: "Escalated" | ""; // optional chip
+  status?: ReviewStatus; // optional chip
   comment: string;
 };
 
@@ -39,17 +48,27 @@ export function computeStats(list: Review[]) {
     avg,
   };
 }
+export const reviewStatusTone: Record<
+  ReviewStatus,
+  { bg: string; text: string }
+> = {
+  Responded: { bg: "bg-emerald-50", text: "text-emerald-700" },
+  Escalated: { bg: "bg-rose-50", text: "text-rose-700" },
+  Pending: { bg: "bg-amber-50", text: "text-amber-700" },
+  Critical: { bg: "bg-rose-100", text: "text-rose-800" },
+  "": { bg: "", text: "" },
+};
 
-// --- sample data (expand as you like) ---
+// --- sample data (valid dates + a mix of statuses for your conditional buttons) ---
 export const REVIEWS: Review[] = [
   {
     id: "r1",
     date: "2025-09-21",
     guest: "Sarah Lee",
     source: "Google",
-    rating: 4,
+    rating: 5,
     sentiment: "Positive",
-    status: "Escalated",
+    status: "Responded", // -> View only
     comment: "Amazing service at check-in.",
   },
   {
@@ -59,6 +78,7 @@ export const REVIEWS: Review[] = [
     source: "TripAdvisor",
     rating: 3,
     sentiment: "Negative",
+    status: "Escalated", // -> View Task
     comment: "Room cleanliness could be improved.",
   },
   {
@@ -68,6 +88,7 @@ export const REVIEWS: Review[] = [
     source: "TripAdvisor",
     rating: 4,
     sentiment: "Neutral",
+    status: "Pending", // -> Respond AI + Escalate
     comment: "Decent stay overall.",
   },
   {
@@ -77,43 +98,67 @@ export const REVIEWS: Review[] = [
     source: "Google",
     rating: 4,
     sentiment: "Neutral",
-    comment: "Quick check-in, average breakfast.",
+    status: "Critical", // -> Respond AI + Escalate
+    comment: "Very slow check-in; lobby was crowded.",
   },
   {
     id: "r5",
-    date: "2025-09-20",
-    guest: "John Doe",
-    source: "Google",
+    date: "2025-09-19",
+    guest: "Priya N.",
+    source: "Booking.com",
     rating: 5,
-    sentiment: "Neutral",
+    sentiment: "Positive",
+    status: "", // -> dash, only View
     comment: "Spacious room, quiet floor.",
   },
   {
     id: "r6",
-    date: "2024-09-20",
-    guest: "Johnn Doe",
-    source: "Googlfe",
-    rating: 5,
-    sentiment: "Neutral",
-    comment: "Spacious room, quiet floor.",
+    date: "2025-09-18",
+    guest: "David Kim",
+    source: "Google",
+    rating: 2,
+    sentiment: "Negative",
+    status: "Escalated",
+    comment: "Air conditioner noisy at night.",
   },
   {
     id: "r7",
-    date: "2025-59-20",
-    guest: "John Doe",
-    source: "Goog5le",
-    rating: 4,
-    sentiment: "Neutral",
-    comment: "Spaciogggus room, quiet floor.",
-  },
-
-  {
-    id: "r8",
-    date: "2025-09-60",
-    guest: "John Doe",
-    source: "Googlnje",
+    date: "2025-09-18",
+    guest: "Jane Smith",
+    source: "TripAdvisor",
     rating: 3,
     sentiment: "Neutral",
-    comment: "Spacious room, quiet floor.",
+    status: "Pending",
+    comment: "Breakfast options were limited.",
+  },
+  {
+    id: "r8",
+    date: "2025-09-17",
+    guest: "Michael Brown",
+    source: "Booking.com",
+    rating: 4,
+    sentiment: "Positive",
+    status: "Responded",
+    comment: "Friendly staff and fast checkout.",
+  },
+  {
+    id: "r9",
+    date: "2025-09-17",
+    guest: "Anna Lopez",
+    source: "Google",
+    rating: 1,
+    sentiment: "Negative",
+    status: "Critical",
+    comment: "Found hair in the bathroom; very disappointed.",
+  },
+  {
+    id: "r10",
+    date: "2025-09-16",
+    guest: "Tom H.",
+    source: "TripAdvisor",
+    rating: 4,
+    sentiment: "Neutral",
+    status: "", // no special actions
+    comment: "Good location, room was okay.",
   },
 ];
