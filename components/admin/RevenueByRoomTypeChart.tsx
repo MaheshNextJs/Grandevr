@@ -37,14 +37,17 @@ export default function RevenueByRoomTypeChart() {
               tickLine={{ stroke: "#E5E7EB" }}
               tickFormatter={(v) => `${Math.round(Number(v) / 1000)}k`}
             />
+
             <Tooltip
-              formatter={(v: number) => [
-                `₹ ${v.toLocaleString("en-IN")}`,
-                "Revenue",
+              cursor={false} // ⟵ turn off the grey hover overlay
+              formatter={(v: number, _k, item) => [
+                `${v}%`,
+                item?.payload?.name,
               ]}
               labelStyle={{ color: "#6B7280" }}
               contentStyle={{ borderRadius: 8, borderColor: "#E5E7EB" }}
             />
+
             <Bar
               dataKey="value"
               barSize={35}

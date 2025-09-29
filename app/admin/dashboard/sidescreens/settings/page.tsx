@@ -1,6 +1,5 @@
 "use client";
 
-// import ProfileSettingsModal from "@/components/admin/profile/ProfileSettingsModal";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -133,10 +132,6 @@ function PersonalInformation() {
           Last updated: 12/08/2024
         </div>
       </div>
-      {/* <ProfileSettingsModal
-        open={openProfile}
-        onClose={() => setOpenProfile(false)}
-      /> */}
 
       {/* Form */}
       <div className="mt-6 space-y-5">

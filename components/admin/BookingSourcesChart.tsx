@@ -18,6 +18,27 @@ const COLORS: Record<string, string> = {
   "Corporate Contracts": "#2E3E3E", // dark gray/green
   "Walk-ins": "#D6BF69", // mustard
 };
+const CustomTooltip = ({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: any;
+}) => {
+  if (active && payload && payload.length) {
+    const item = payload[0];
+    const name = item?.payload?.name;
+    const value = item?.value;
+
+    return (
+      <div className="rounded-md border border-gray-200 bg-white px-3 py-2 text-xs text-gray-700 shadow-sm">
+        <div className="font-medium">{name}</div>
+        <div>{value}%</div>
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function BookingSourcesChart() {
   return (
@@ -72,7 +93,9 @@ export default function BookingSourcesChart() {
               axisLine={{ stroke: "#E5E7EB" }}
               tickLine={{ stroke: "#E5E7EB" }}
             />
+
             <Tooltip
+              cursor={false} // ⟵ turn off the grey hover overlay
               formatter={(v: number, _k, item) => [
                 `${v}%`,
                 item?.payload?.name,
@@ -80,6 +103,7 @@ export default function BookingSourcesChart() {
               labelStyle={{ color: "#6B7280" }}
               contentStyle={{ borderRadius: 8, borderColor: "#E5E7EB" }}
             />
+
             <Bar dataKey="value" barSize={35} radius={[4, 4, 0, 0]}>
               {bookingSources.map((d) => (
                 <Cell key={d.name} fill={COLORS[d.name] ?? "#A3A3A3"} />
