@@ -335,13 +335,13 @@ export default function Navbar() {
             <Link href="/user/rooms" className="hover:text-gray-500">
               Rooms
             </Link>
-            <Link href="/dining" className="hover:text-gray-500">
+            <Link href="/user/dining" className="hover:text-gray-500">
               Dining
             </Link>
-            <Link href="/facilities" className="hover:text-gray-500">
+            <Link href="/user/facilities" className="hover:text-gray-500">
               Facilities
             </Link>
-            <Link href="/contact" className="hover:text-gray-500">
+            <Link href="/user/contact" className="hover:text-gray-500">
               Contact
             </Link>
 

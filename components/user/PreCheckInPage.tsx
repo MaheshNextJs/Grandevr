@@ -42,7 +42,7 @@ export default function PreCheckInPage() {
   }, []);
 
   const handleFindBooking = () => {
-    router.push("/pre-check-in/id-verification");
+    router.push("/user/pre-check-in/id-verification");
   };
 
   return (

@@ -241,7 +241,7 @@ export default function PreferencesPage() {
             <div className="mt-8 flex justify-center">
               <button
                 type="button"
-                onClick={() => router.push("/pre-check-in/add-on-payment")}
+                onClick={() => router.push("/user/pre-check-in/add-on-payment")}
                 className="w-full  bg-[#A57865] text-white py-3 rounded-md text-sm hover:bg-[#7a3c23] transition-colors"
               >
                 Continue

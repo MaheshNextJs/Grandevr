@@ -261,7 +261,7 @@ export default function IdVerificationPage() {
           <button
             type="button"
             disabled={status !== "verified"}
-            onClick={() => router.push("/pre-check-in/preferences")}
+            onClick={() => router.push("/user/pre-check-in/preferences")}
             className={`w-full md:w-96 bg-[#A57865] text-white py-3 rounded-md text-sm transition-colors duration-300 ${
               status === "verified"
                 ? "hover:bg-[#7a3c23]"

@@ -126,7 +126,7 @@ export default function DigitalSignaturePage() {
   };
 
   const handleSubmit = () => {
-    router.push("/pre-check-in/confirmation");
+    router.push("/user/pre-check-in/confirmation");
   };
 
   return (

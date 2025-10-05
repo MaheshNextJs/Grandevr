@@ -40,7 +40,7 @@ export default function AddOnPaymentPage() {
   }, []);
 
   const handleConfirm = () => {
-    router.push("/digital-signature");
+    router.push("/user/digital-signature");
   };
 
   return (

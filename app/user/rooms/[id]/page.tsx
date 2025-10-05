@@ -1,6 +1,16 @@
-"use client";
-import RoomDetails from "@/components/user/rooms/RoomDetails";
+import { notFound } from "next/navigation";
+import RoomDetailsClient from "../../../../components/user/rooms/RoomDetails";
+import { ROOMS } from "../data";
 
-export default function RoomDetailsPage() {
-  return <RoomDetails />;
+type PageProps = {
+  params: { id: string };
+};
+
+export default function RoomDetailsPage({ params }: PageProps) {
+  const id = Number(params.id);
+  const room = ROOMS.find((r) => r.id === id);
+
+  if (!room) return notFound();
+
+  return <RoomDetailsClient room={room} />;
 }

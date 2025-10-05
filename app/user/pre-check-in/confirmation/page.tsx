@@ -224,7 +224,7 @@ export default function PreCheckInConfirmationPage() {
         <div className="flex flex-col md:flex-row gap-4 pb-6">
           <button
             className="w-full md:w-1/2 border border-gray-300 text-gray-700 rounded-md py-2 text-sm hover:bg-gray-100 transition-colors"
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/user")}
           >
             Back to Home
           </button>

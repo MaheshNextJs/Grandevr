@@ -182,7 +182,7 @@ export default function ConfirmationPage() {
           <div className="mt-5 flex flex-wrap gap-3">
             <button
               className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 text-sm hover:bg-gray-100 transition-colors"
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/user")}
             >
               Back to Home
             </button>
@@ -194,7 +194,7 @@ export default function ConfirmationPage() {
             </button>
             <button
               className="px-4 py-2 rounded-md bg-[#A57865] text-white text-sm hover:bg-[#7a3c23] transition-colors"
-              onClick={() => router.push("/pre-check-in")}
+              onClick={() => router.push("/user/pre-check-in")}
             >
               Pre‑Check‑In Now
             </button>

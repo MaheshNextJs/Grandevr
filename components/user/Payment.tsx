@@ -1,12 +1,63 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ROOMS } from "@/app/user/rooms/data";
+
 const steps = ["Dates & Rooms", "Guest Details", "Payment", "Confirmation"];
+
+function parseDate(d?: string | null) {
+  if (!d) return undefined;
+  const parts = d.split("-");
+  if (parts.length !== 3) return undefined;
+  const [y, m, day] = parts.map((x) => Number(x));
+  if (!y || !m || !day) return undefined;
+  return new Date(y, m - 1, day);
+}
+function formatDate(d?: Date) {
+  if (!d) return "—";
+  return d.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+function diffNights(inDate?: Date, outDate?: Date) {
+  if (!inDate || !outDate) return 3;
+  const ms = outDate.getTime() - inDate.getTime();
+  const nights = Math.ceil(ms / (1000 * 60 * 60 * 24));
+  return nights > 0 ? nights : 1;
+}
 
 export default function Payment() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [currentStep] = useState(3);
+
+  // Read the same params we forwarded from Guest Details
+  const roomId = Number(searchParams.get("roomId"));
+  const checkInStr = searchParams.get("in");
+  const checkOutStr = searchParams.get("out");
+  const adStr = searchParams.get("ad");
+  const chStr = searchParams.get("ch");
+
+  const inDate = parseDate(checkInStr);
+  const outDate = parseDate(checkOutStr);
+  const adults = adStr ? Number(adStr) : 2;
+  const children = chStr ? Number(chStr) : 1;
+
+  const room = useMemo(() => {
+    if (!roomId) return undefined;
+    return ROOMS.find((r) => r.id === roomId);
+  }, [roomId]);
+
+  const roomTitle = room?.title ?? "Executive Suite";
+  const nightlyPrice = room?.price ?? 250;
+
+  const nights = diffNights(inDate, outDate);
+  const subtotal = nightlyPrice * nights;
+  const taxes = Math.round(subtotal * 0.1);
+  const total = subtotal + taxes;
 
   const railRef = useRef<HTMLDivElement>(null);
   const firstRef = useRef<HTMLDivElement>(null);
@@ -81,8 +132,7 @@ export default function Payment() {
                     {isCompleted ? "✓" : stepNumber}
                   </div>
                   <span
-                    className={`mt-2 text-sm text-center whitespace-nowrap
-                    ${
+                    className={`mt-2 text-sm text-center whitespace-nowrap ${
                       isCurrent
                         ? "font-semibold text-gray-900"
                         : "text-gray-500"
@@ -105,13 +155,19 @@ export default function Payment() {
                 Reservation Summary
               </h3>
               <div className="divide-y divide-gray-200 text-sm">
+                {/* Keep identity placeholders since you don't collect them yet */}
                 {[
                   ["Full Name", "XYZ"],
                   ["Email", "XYZ@gmail.com"],
                   ["Phone", "XYZ"],
-                  ["Check-in", "20–23 Sept 2025"],
-                  ["Check-out", "20–23 Sept 2025"],
-                  ["Guests", "2 Adults, 1 Child"],
+                  ["Check-in", formatDate(inDate)],
+                  ["Check-out", formatDate(outDate)],
+                  [
+                    "Guests",
+                    `${adults} Adult${adults === 1 ? "" : "s"}, ${children} ${
+                      children === 1 ? "Child" : "Children"
+                    }`,
+                  ],
                 ].map(([label, value]) => (
                   <div key={label} className="px-6 py-3 flex justify-between">
                     <span className="text-gray-500">{label}</span>
@@ -122,26 +178,29 @@ export default function Payment() {
                 <div className="px-6 py-3">
                   <div className="flex justify-between">
                     <span className="text-gray-500">Rooms</span>
-                    <span className="text-gray-800">Executive Suite × 1</span>
+                    <span className="text-gray-800">{roomTitle} × 1</span>
                   </div>
                   <div className="mt-2 flex justify-between">
-                    <span className="text-gray-500">$250/night × 3 nights</span>
-                    <span className="text-gray-800">$750</span>
+                    <span className="text-gray-500">
+                      ${nightlyPrice}/night × {nights}{" "}
+                      {nights === 1 ? "night" : "nights"}
+                    </span>
+                    <span className="text-gray-800">${subtotal}</span>
                   </div>
                 </div>
 
                 <div className="px-6 py-3 flex justify-between">
                   <span className="text-gray-500">Subtotal</span>
-                  <span className="text-gray-800">$750</span>
+                  <span className="text-gray-800">${subtotal}</span>
                 </div>
                 <div className="px-6 py-3 flex justify-between">
                   <span className="text-gray-500">Taxes & Fees</span>
-                  <span className="text-gray-800">$75</span>
+                  <span className="text-gray-800">${taxes}</span>
                 </div>
 
                 <div className="px-6 py-4 flex justify-between items-center">
                   <span className="text-gray-800 font-semibold">Total</span>
-                  <span className="text-gray-900 font-extrabold">$825</span>
+                  <span className="text-gray-900 font-extrabold">${total}</span>
                 </div>
               </div>
             </div>
@@ -237,7 +296,7 @@ export default function Payment() {
             {/* Confirm button */}
             <button
               type="button"
-              onClick={() => router.push("/confirmation")}
+              onClick={() => router.push("/user/confirmation")}
               className="w-full bg-[#A57865] text-white py-3 rounded-md text-sm hover:bg-[#7a3c23] transition"
             >
               Confirm &amp; Pay

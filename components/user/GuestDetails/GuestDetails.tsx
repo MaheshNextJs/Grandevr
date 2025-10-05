@@ -1,14 +1,65 @@
 "use client";
+
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ROOMS } from "@/app/user/rooms/data";
 
 const steps = ["Dates & Rooms", "Guest Details", "Payment", "Confirmation"];
 
-export default function GuestDetails() {
-  const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(2);
+function parseDate(d?: string | null) {
+  if (!d) return undefined;
+  const parts = d.split("-");
+  if (parts.length !== 3) return undefined;
+  const [y, m, day] = parts.map((x) => Number(x));
+  if (!y || !m || !day) return undefined;
+  return new Date(y, m - 1, day);
+}
+function formatDate(d?: Date) {
+  if (!d) return "—";
+  return d.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+function diffNights(inDate?: Date, outDate?: Date) {
+  if (!inDate || !outDate) return 3; // fallback like before
+  const ms = outDate.getTime() - inDate.getTime();
+  const nights = Math.ceil(ms / (1000 * 60 * 60 * 24));
+  return nights > 0 ? nights : 1;
+}
 
+export default function GuestDetailsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const roomId = Number(searchParams.get("roomId"));
+  const checkInStr = searchParams.get("in");
+  const checkOutStr = searchParams.get("out");
+  const adStr = searchParams.get("ad");
+  const chStr = searchParams.get("ch");
+
+  const inDate = parseDate(checkInStr);
+  const outDate = parseDate(checkOutStr);
+  const adults = adStr ? Number(adStr) : 2;
+  const children = chStr ? Number(chStr) : 1;
+
+  const room = useMemo(() => {
+    if (!roomId) return undefined;
+    return ROOMS.find((r) => r.id === roomId);
+  }, [roomId]);
+
+  const summaryImage = room?.image ?? "/images/Room4.png";
+  const summaryTitle = room?.title ?? "Executive Suite";
+  const nightlyPrice = room?.price ?? 250;
+
+  const nights = diffNights(inDate, outDate);
+  const subtotal = nightlyPrice * nights;
+  const taxes = Math.round(subtotal * 0.1);
+  const total = subtotal + taxes;
+
+  const [currentStep, setCurrentStep] = useState(2);
   const railRef = useRef<HTMLDivElement>(null);
   const firstRef = useRef<HTMLDivElement>(null);
   const lastRef = useRef<HTMLDivElement>(null);
@@ -23,16 +74,12 @@ export default function GuestDetails() {
       const railBox = railRef.current.getBoundingClientRect();
       const firstBox = firstRef.current.getBoundingClientRect();
       const lastBox = lastRef.current.getBoundingClientRect();
-
       const firstCenter = firstBox.left + firstBox.width / 2;
       const lastCenter = lastBox.left + lastBox.width / 2;
-
       const left = firstCenter - railBox.left;
       const width = Math.max(0, lastCenter - firstCenter);
-
       setRailStyle({ left, width });
     };
-
     calc();
     window.addEventListener("resize", calc);
     return () => window.removeEventListener("resize", calc);
@@ -40,18 +87,25 @@ export default function GuestDetails() {
 
   const handlePayment = () => {
     setCurrentStep(3);
-    router.push("/payments");
+    const params = new URLSearchParams({
+      roomId: String(roomId || ""),
+      in: checkInStr || "",
+      out: checkOutStr || "",
+      ad: String(adults),
+      ch: String(children),
+    });
+    router.push(`/user/payments?${params.toString()}`);
   };
 
   return (
     <section className="px-6 py-30 bg-white text-gray-800 font-sans">
       <div className="max-w-6xl mx-auto">
+        {/* Stepper */}
         <div className="mb-12 relative" ref={railRef}>
           <div
             className="absolute top-7 h-[2px] bg-gray-300 z-0"
             style={{ left: railStyle.left, width: railStyle.width }}
           />
-
           <div
             className="absolute top-7 h-[2px] bg-[#A57865] z-0"
             style={{
@@ -61,14 +115,11 @@ export default function GuestDetails() {
                 (Math.max(0, currentStep - 1) / (steps.length - 1)),
             }}
           />
-
-          {/* bubbles */}
           <div className="flex justify-between items-center relative z-10">
             {steps.map((step, index) => {
               const stepNumber = index + 1;
               const isCompleted = stepNumber < currentStep;
               const isCurrent = stepNumber === currentStep;
-
               return (
                 <div
                   key={step}
@@ -94,8 +145,7 @@ export default function GuestDetails() {
                     {isCompleted ? "✓" : stepNumber}
                   </div>
                   <span
-                    className={`mt-2 text-sm text-center whitespace-nowrap
-                    ${
+                    className={`mt-2 text-sm text-center whitespace-nowrap ${
                       isCurrent
                         ? "font-semibold text-gray-900"
                         : "text-gray-500"
@@ -175,26 +225,32 @@ export default function GuestDetails() {
           {/* Booking Summary */}
           <div className="border border-gray-200 shadow-md rounded-lg p-2 w-full max-w-md mx-auto">
             <Image
-              src="/images/Room4.png"
+              src={summaryImage}
               alt="Booked Room"
               width={500}
               height={300}
               className="rounded-md mb-4 object-cover"
             />
-
             <h3 className="text-md font-semibold mb-4 px-4">Booking Details</h3>
             <div className="space-y-2 text-sm text-gray-700 px-4">
               <p className="flex justify-between">
+                <span className="font-medium">Room:</span>
+                <span>{summaryTitle}</span>
+              </p>
+              <p className="flex justify-between">
                 <span className="font-medium">Check-in:</span>
-                <span>22 Sept 2025</span>
+                <span>{formatDate(inDate) || "22 Sept 2025"}</span>
               </p>
               <p className="flex justify-between">
                 <span className="font-medium">Check-out:</span>
-                <span>24 Sept 2025</span>
+                <span>{formatDate(outDate) || "24 Sept 2025"}</span>
               </p>
               <p className="flex justify-between">
                 <span className="font-medium">Guests:</span>
-                <span>2 Adults, 1 Child</span>
+                <span>
+                  {adults} Adult{adults === 1 ? "" : "s"}, {children}{" "}
+                  {children === 1 ? "Child" : "Children"}
+                </span>
               </p>
             </div>
 
@@ -203,23 +259,26 @@ export default function GuestDetails() {
             </h3>
             <div className="text-sm text-gray-700 space-y-1 px-4">
               <p className="flex justify-between">
-                <span>Executive Suite × 1</span>
+                <span>{summaryTitle} × 1</span>
               </p>
               <p className="flex justify-between">
-                <span>$250/night × 3 nights</span>
-                <span>$750</span>
+                <span>
+                  ${nightlyPrice}/night × {nights}{" "}
+                  {nights === 1 ? "night" : "nights"}
+                </span>
+                <span>${subtotal}</span>
               </p>
               <p className="flex justify-between">
                 <span>Subtotal:</span>
-                <span>$750</span>
+                <span>${subtotal}</span>
               </p>
               <p className="flex justify-between">
                 <span>Taxes & Fees:</span>
-                <span>$75</span>
+                <span>${taxes}</span>
               </p>
               <p className="flex justify-between font-bold text-gray-900 text-base mt-2">
                 <span>Total:</span>
-                <span>$825</span>
+                <span>${total}</span>
               </p>
             </div>
 
